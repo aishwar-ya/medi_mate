@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
+<div class="flex-grow">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold text-slate-900 dark:text-white pr-10">Stock</h1>
+</div>
+</header>
+<main class="px-4 pt-4 pb-24">
+<section class="mb-8">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Medication Inventory</h2>
+<div class="space-y-3">
+<div class="flex items-center gap-4 rounded-lg bg-white dark:bg-slate-800/50 p-3 shadow-sm">
+<div class="h-14 w-14 shrink-0 rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCYPxAnKwlVApa0VTralYluws5LGMG_i-8iUwQJxfK9zq8EswNmR3ISi9PJefq22rQ6G1G_dgrJwHcjVTg3h9DdCNlUqRYoxfHaEBBs8d1iOu0-fUdRhmGuv3SvbtZ83WNbg23V-Wcs3-YNzWYYHsbvLd4iJJYbKjcetXSDXk8N2_7uMwQpVBSiW4aloe5AvkaFaWLkg55GU48v5kGY0Q1p_wtdaJHKYUebFKwJ-Gk61i-yNMh27z4SvVXX5MuExmQyEUZoey_aJ2Q");'></div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-slate-100">Ibuprofen</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">100mg</p>
+</div>
+<div class="flex items-center gap-2">
+<p class="text-lg font-bold text-slate-900 dark:text-white">30</p>
+<span class="text-sm text-slate-500 dark:text-slate-400">pills</span>
+</div>
+</div>
+<div class="flex items-center gap-4 rounded-lg bg-white dark:bg-slate-800/50 p-3 shadow-sm">
+<div class="h-14 w-14 shrink-0 rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwx3aYn_tMHcd4i8bzw31lXUN5q7_s5yNRiy8-0UmVHnGR7-r_lF9mfG-LnB-tBoh64FypsWI9P3ya174Z-Qly1i8L-nDqTk0KcDWMXAQ6U_LyuSYSvl2JFvGgJjefyNEwklb6bkHqfaRvmc3DXa02lQD0s6X6j4rUGQiPHH-z_BGWLs_9GVXV6QU7MtcWAxiXW17oR-UNteigKiZqs1YTNrK6ZtRvDSo1IyLOu4A2qvNdyLE-nhaxwR_XUyeVbY8WthRGi-eds-8");'></div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-slate-100">Acetaminophen</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">500mg</p>
+</div>
+<div class="flex items-center gap-2">
+<p class="text-lg font-bold text-slate-900 dark:text-white">60</p>
+<span class="text-sm text-slate-500 dark:text-slate-400">pills</span>
+</div>
+</div>
+<div class="flex items-center gap-4 rounded-lg bg-white dark:bg-slate-800/50 p-3 shadow-sm">
+<div class="h-14 w-14 shrink-0 rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-8mbYFEJ_E-r-ETVkb2G4fmK4bXvqrm2QA9m-_bQ7tIuEiFP4kxF6A9z3xeRCRiZGFrtWNh5oeb1jhh2pd0EXXycI0ktn9EQsJSNzgRX5dANnembNA9SiCpKp6p94g58p798YWfo4pdXxbimLCfaeMjv4_ZMWBJ3yt5pUzxszuui9UNFZJJVjg8v0bfZqUNXJuvdXDQphuGhmPyHTlop7OPvURUv5VwO7Jl4y_KpNBKjOf-8MQ-GrZjy4_pigWF6eo4Ulxeov2SU");'></div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-slate-100">Diphenhydramine</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">25mg</p>
+</div>
+<div class="flex items-center gap-2">
+<p class="text-lg font-bold text-slate-900 dark:text-white">15</p>
+<span class="text-sm text-slate-500 dark:text-slate-400">pills</span>
+</div>
+</div>
+<div class="flex items-center gap-4 rounded-lg bg-white dark:bg-slate-800/50 p-3 shadow-sm">
+<div class="h-14 w-14 shrink-0 rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBt7KHVNbRozOC90UyS5PqPM3arykQgzKH6bqUV-9GjEd5-6AS0CEORV16gyTVKvz20XFxwtLfa-yu9oSsdtzLVxMZIG5R-VaJwbiziOJWIzdaaiY3SuzCdJc2b2QWrkVSq4OYAh5U58ydnHVQg3vSJf0uq3W2eZkwSEHwOl1tZdFpgdCuH4PKMHzXra00K-W7sB3wBAgGMlxTFCP7OH3g8oJU0BODuC3o5DArLM_teHSouhfGP4sFPOnIHsKxsmc8qJhaeZfb7J54");'></div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-slate-100">Loratadine</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">10mg</p>
+</div>
+<div class="flex items-center gap-2">
+<p class="text-lg font-bold text-slate-900 dark:text-white">45</p>
+<span class="text-sm text-slate-500 dark:text-slate-400">pills</span>
+</div>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Refill Alerts</h2>
+<div class="rounded-lg bg-primary/10 dark:bg-primary/20 p-4 flex items-center gap-4">
+<div class="h-14 w-14 shrink-0 rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD1kVtXcRcqyPxuF2QXniVm3tyB5R66fFxTQDh9r0bhF1Nl-y77fk5bV-0wVIzjJBd6C-nB7uFxZjBWDmchdgBrGwWD5lH9dSzjo9MO4Mhkx_0NciTQNoCkdRgQ_cMLZxAiGWswRreu_beo1rsX7L-YCtJ5CfaPpCCJ7s_Z_n8qEsNrKFkkOUtZHPk6ccJTtevcsIzOQDw6b-X9QNGXqytmJACxXlCQzizYGl22hCi7XnB6aHeMCz4aiG-ohtUuD8uAEgOddopjrJY");'></div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-slate-100">Diphenhydramine</p>
+<p class="text-sm text-primary dark:text-primary">Running low</p>
+</div>
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+</div>
+</section>
+</main>
+</div>
+<nav class="fixed bottom-0 left-0 right-0 border-t border-slate-200 dark:border-slate-800 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm">
+<div class="flex justify-around items-center h-20 px-2">
+<a class="flex flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">pill</span>
+<p class="text-xs font-medium">Medications</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">water_drop</span>
+<p class="text-xs font-medium">Hydration</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+<p class="text-xs font-medium">Scan</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary dark:text-primary" href="#">
+<div class="bg-primary/10 dark:bg-primary/20 p-3 rounded-full">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<p class="text-xs font-bold">Stock</p>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-xs font-medium">Settings</p>
+</a>
+</div>
+</nav>
+</div>
+
+
+</body></html>
