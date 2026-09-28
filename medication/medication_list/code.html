@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Medication Reminders</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col h-screen justify-between">
+<div class="flex-grow overflow-y-auto">
+<header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10">
+<div class="flex items-center justify-between p-4">
+<div class="w-10"></div>
+<h1 class="text-lg font-bold text-slate-800 dark:text-white text-center">Medications</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+</div>
+</header>
+<main class="p-4 space-y-3">
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">pill</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-white">Vitamin D</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Next dose: 10:00 AM</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">pill</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-white">Iron Supplement</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Next dose: 12:00 PM</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">pill</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-white">Omega-3</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Next dose: 2:00 PM</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl">pill</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-slate-800 dark:text-white">Probiotic</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Next dose: 6:00 PM</p>
+</div>
+</div>
+</main>
+</div>
+<nav class="bg-white dark:bg-background-dark/50 border-t border-slate-200 dark:border-slate-800 shadow-t-sm">
+<div class="flex justify-around items-center px-4 py-2">
+<a class="flex flex-col items-center gap-1 text-primary p-2" href="#">
+<div class="w-12 h-8 flex items-center justify-center bg-primary/10 rounded-full">
+<span class="material-symbols-outlined">pill</span>
+</div>
+<p class="text-xs font-medium">Medications</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined h-8">water_drop</span>
+<p class="text-xs font-medium">Hydration</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined h-8">qr_code_scanner</span>
+<p class="text-xs font-medium">Scan</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined h-8">inventory_2</span>
+<p class="text-xs font-medium">Stock</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 p-2" href="#">
+<span class="material-symbols-outlined h-8">settings</span>
+<p class="text-xs font-medium">Settings</p>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

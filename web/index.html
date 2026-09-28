@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+
+  <meta
+    content="IE=Edge"
+    http-equiv="X-UA-Compatible"
+  >
+
+  <meta
+    name="description"
+    content="A new Flutter project."
+  >
+
+  <!-- iOS meta tags & icons -->
+
+  <meta
+    name="mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="medi_mate"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="icons/Icon-192.png"
+  >
+
+  <!-- Favicon -->
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="favicon.png"
+  >
+
+  <title>medi_mate</title>
+
+  <link
+    rel="manifest"
+    href="manifest.json"
+  >
+
+  <!-- =====================================================
+       ZXING BROWSER
+       ===================================================== -->
+
+  <script
+  src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.2.6/dist/quagga.min.js">
+</script>
+
+</head>
+
+<body>
+
+  <!-- =====================================================
+       SUPABASE PASSWORD RECOVERY URL WATCHER
+       ===================================================== -->
+
+  <script>
+
+    (function () {
+
+      console.log(
+        "🌐 MediMate web page started"
+      );
+
+      function checkForRecoveryCode() {
+
+        try {
+
+          const currentUrl =
+            window.location.href;
+
+          const params =
+            new URLSearchParams(
+              window.location.search
+            );
+
+          const code =
+            params.get("code");
+
+          if (
+            code &&
+            code.length > 0
+          ) {
+
+            const existingCode =
+              sessionStorage.getItem(
+                "supabase_recovery_code"
+              );
+
+            // Save only when it is a new code.
+
+            if (
+              existingCode !== code
+            ) {
+
+              console.log(
+                "🔑 PASSWORD RECOVERY CODE FOUND IN BROWSER:",
+                code
+              );
+
+              sessionStorage.setItem(
+                "supabase_recovery_code",
+                code
+              );
+
+              sessionStorage.setItem(
+                "supabase_recovery_url",
+                currentUrl
+              );
+
+              console.log(
+                "✅ Recovery code saved to sessionStorage"
+              );
+            }
+          }
+
+        } catch (error) {
+
+          console.error(
+            "❌ Recovery URL check failed:",
+            error
+          );
+
+        }
+      }
+
+      // Check immediately when the page loads.
+
+      checkForRecoveryCode();
+
+      // Keep checking in case the browser URL changes
+      // while Flutter is already running.
+
+      setInterval(
+        checkForRecoveryCode,
+        300
+      );
+
+    })();
+
+  </script>
+
+
+  <!-- =====================================================
+       MEDIMATE ZXING SCANNER
+       ===================================================== -->
+
+  <script src="zxing_scanner.js"></script>
+
+
+  <!-- =====================================================
+       FLUTTER
+       ===================================================== -->
+
+  <script
+    src="flutter_bootstrap.js"
+    async>
+  </script>
+
+</body>
+
+</html>
