@@ -390,17 +390,15 @@ Some features need device permissions to work properly.
 
 ## 📸 Screenshots
 
-> Add your app screenshots to a `screenshots/` folder and they will appear below.
-
 <div align="center">
 
-| 🏠 Home | 💊 Medications | 💧 Hydration |
+| 🏠 Home | 💧 Hydration | 📦 Medicine Stock |
 |:---:|:---:|:---:|
-| <img src="screenshots/home.png" width="200"/> | <img src="screenshots/medications.png" width="200"/> | <img src="screenshots/hydration.png" width="200"/> |
+| <img src="screenshots/01_home.png" width="200"/> | <img src="screenshots/02_hydration.png" width="200"/> | <img src="screenshots/03_stock.png" width="200"/> |
 
-| 📦 Medicine Stock | 🎤 Voice Reminder |
-|:---:|:---:|
-| <img src="screenshots/stock.png" width="200"/> | <img src="screenshots/voice_reminder.png" width="200"/> |
+| ⚙️ Settings | ➕ Add Medication | 🎤 Voice Reminder |
+|:---:|:---:|:---:|
+| <img src="screenshots/04_settings.png" width="200"/> | <img src="screenshots/05_add_medication.png" width="200"/> | <img src="screenshots/06_voice_reminder.png" width="200"/> |
 
 </div>
 
