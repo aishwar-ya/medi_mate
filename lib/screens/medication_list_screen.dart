@@ -290,14 +290,17 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
         final userId = supabase.auth.currentUser?.id;
 
         if (userId != null) {
-          await supabase.from('scheduled_notifications').insert({
-            'user_id': userId,
-            'medication_id': medicationId,
-            'medication_name': medicationName,
-            'scheduled_time': timeStr,
-            'fcm_token': _fcmToken,
-            'updated_at': DateTime.now().toIso8601String(),
-          });
+          await supabase.from('scheduled_notifications').upsert(
+            {
+              'user_id': userId,
+              'medication_id': medicationId,
+              'medication_name': medicationName,
+              'scheduled_time': timeStr,
+              'fcm_token': _fcmToken,
+              'updated_at': DateTime.now().toIso8601String(),
+            },
+            onConflict: 'user_id,medication_id',
+          );
 
           logger.i(
             '✅ Notification schedule saved to database',
