@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:medi_mate/models/medication_model.dart';
-
 import 'package:medi_mate/screens/add_medication_screen.dart';
-
 import 'package:medi_mate/screens/barcode_scanner_screen.dart';
-
 import 'package:medi_mate/services/notification_service.dart';
-
 import 'package:intl/intl.dart';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:logger/logger.dart';
 
 class MedicationListScreen extends StatefulWidget {
@@ -25,7 +17,6 @@ class MedicationListScreen extends StatefulWidget {
 
 class _MedicationListScreenState extends State<MedicationListScreen> {
   final supabase = Supabase.instance.client;
-
   final logger = Logger();
 
   String? _fcmToken;
@@ -33,6 +24,15 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
   late Future<List<Medication>> _medicationsFuture;
 
   List<Medication> _medicationsList = [];
+
+  static const Color purple = Color(0xFF7C3AED);
+  static const Color purpleDark = Color(0xFF5B21B6);
+  static const Color lavender = Color(0xFFF3EEFF);
+  static const Color pageBackground = Color(0xFFF8F6FF);
+  static const Color textDark = Color(0xFF211738);
+  static const Color textMuted = Color(0xFF716A80);
+  static const Color success = Color(0xFF16A34A);
+  static const Color danger = Color(0xFFDC2626);
 
   @override
   void initState() {
@@ -61,7 +61,6 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
       if (_fcmToken != null) {
         logger.i('✅ FCM Token obtained');
-
         await _saveFCMTokenToDatabase(_fcmToken!);
       } else {
         logger.e('❌ Failed to get FCM token');
@@ -91,15 +90,12 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
       if (userId == null) {
         logger.w('⚠️ No user logged in, cannot save FCM token');
-
         return;
       }
 
       await supabase.from('user_tokens').upsert({
         'user_id': userId,
-
         'fcm_token': token,
-
         'updated_at': DateTime.now().toIso8601String(),
       }, onConflict: 'user_id');
 
@@ -117,7 +113,6 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
       if (userId == null) {
         logger.w('⚠️ No user logged in');
-
         return [];
       }
 
@@ -127,17 +122,15 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
-      final List<Map<String, dynamic>> data =
-          (response as List)
-              .map((item) => Map<String, dynamic>.from(item as Map))
-              .toList();
+      final List<Map<String, dynamic>> data = (response as List)
+          .map((item) => Map<String, dynamic>.from(item as Map))
+          .toList();
 
       logger.i('✅ Fetched ${data.length} medications');
 
       return data.map((item) => Medication.fromJson(item)).toList();
     } catch (e) {
       logger.e('❌ Error fetching medications: $e');
-
       return [];
     }
   }
@@ -150,7 +143,6 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
       setState(() {
         _medicationsList = meds;
-
         _medicationsFuture = Future<List<Medication>>.value(meds);
       });
     } catch (e) {
@@ -160,26 +152,30 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   String _convert12To24Hour(String time12) {
     try {
-      List<String> parts = time12.split(' ');
+      final parts = time12.split(' ');
 
       if (parts.length != 2) return time12;
 
-      List<String> hm = parts[0].split(':');
+      final hm = parts[0].split(':');
 
-      int hour = int.parse(hm[0]);
+      final hour = int.parse(hm[0]);
+      final minute = int.parse(hm[1]);
 
-      int minute = int.parse(hm[1]);
+      final ampm = parts[1].toUpperCase();
 
-      String ampm = parts[1].toUpperCase();
+      var finalHour = hour;
 
-      if (ampm == 'PM' && hour != 12) hour += 12;
+      if (ampm == 'PM' && hour != 12) {
+        finalHour += 12;
+      }
 
-      if (ampm == 'AM' && hour == 12) hour = 0;
+      if (ampm == 'AM' && hour == 12) {
+        finalHour = 0;
+      }
 
-      return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+      return '${finalHour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
     } catch (e) {
       logger.e('❌ Error converting time: $e');
-
       return time12;
     }
   }
@@ -187,30 +183,36 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
   Future<void> _addMedication() async {
     final result = await Navigator.push<Map<String, dynamic>>(
       context,
-
-      MaterialPageRoute(builder: (_) => const AddMedicationScreen()),
+      MaterialPageRoute(
+        builder: (_) => const AddMedicationScreen(),
+      ),
     );
 
     if (result != null && mounted) {
       try {
         final userId = supabase.auth.currentUser?.id;
 
-        if (userId == null) throw Exception('User not logged in');
+        if (userId == null) {
+          throw Exception('User not logged in');
+        }
 
         result['user_id'] = userId;
 
-        logger.i('➕ Adding new medication: ${result['name']}');
+        logger.i(
+          '➕ Adding new medication: ${result['name']}',
+        );
 
         final insertedData =
             await supabase.from('medications').insert(result).select();
 
         final newMed = Medication.fromJson(insertedData.first);
 
-        logger.i('✅ Medication added with ID: ${newMed.id}');
+        logger.i(
+          '✅ Medication added with ID: ${newMed.id}',
+        );
 
-        // Auto-generate barcode if not present
-
-        if (result['barcode'] == null || result['barcode'].toString().isEmpty) {
+        if (result['barcode'] == null ||
+            result['barcode'].toString().isEmpty) {
           final barcode = 'MEDIC00${newMed.id}';
 
           await supabase
@@ -222,32 +224,27 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
           logger.i('📊 Barcode generated: $barcode');
         }
 
-        // Schedule notifications
-
         if (result['reminder_times'] != null &&
             result['reminder_times'] is List) {
-          final List<String> reminderTimes = List<String>.from(
-            result['reminder_times'],
-          );
+          final List<String> reminderTimes =
+              List<String>.from(result['reminder_times']);
 
           logger.i(
             '⏰ Scheduling ${reminderTimes.length} notifications for ${newMed.name}',
           );
 
           for (int i = 0; i < reminderTimes.length; i++) {
-            String timeStr12Hour = reminderTimes[i];
+            final timeStr12Hour = reminderTimes[i];
 
-            String timeStr24Hour = _convert12To24Hour(timeStr12Hour);
+            final timeStr24Hour =
+                _convert12To24Hour(timeStr12Hour);
 
-            int notificationId = newMed.id * 100 + i;
+            final notificationId = newMed.id * 100 + i;
 
             await _scheduleNotificationWithFCM(
               id: notificationId,
-
               medicationId: newMed.id,
-
               medicationName: newMed.name,
-
               timeStr: timeStr24Hour,
             );
           }
@@ -260,9 +257,10 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to add medication: $e'),
-
-              backgroundColor: Colors.red,
+              content: Text(
+                'Failed to add medication: $e',
+              ),
+              backgroundColor: danger,
             ),
           );
         }
@@ -272,29 +270,21 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   Future<void> _scheduleNotificationWithFCM({
     required int id,
-
     required int medicationId,
-
     required String medicationName,
-
     required String timeStr,
   }) async {
     try {
-      logger.i(
-        '🔔 Scheduling notification ID: $id for medication ID: $medicationId',
-      );
-
       await NotificationService.scheduleDailyNotification(
         id: id,
-
         title: 'Medication Reminder',
-
         body: 'Time to take $medicationName',
-
         timeStr: timeStr,
       );
 
-      logger.i('✅ Local notification scheduled successfully');
+      logger.i(
+        '✅ Local notification scheduled successfully',
+      );
 
       if (_fcmToken != null) {
         final userId = supabase.auth.currentUser?.id;
@@ -302,33 +292,31 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
         if (userId != null) {
           await supabase.from('scheduled_notifications').insert({
             'user_id': userId,
-
             'medication_id': medicationId,
-
-            'notification_id': id,
-
             'medication_name': medicationName,
-
             'scheduled_time': timeStr,
-
             'fcm_token': _fcmToken,
-
             'updated_at': DateTime.now().toIso8601String(),
           });
 
-          logger.i('✅ Notification schedule saved to database');
+          logger.i(
+            '✅ Notification schedule saved to database',
+          );
         }
       }
     } catch (e) {
-      logger.e('❌ Error scheduling notification: $e');
+      logger.e(
+        '❌ Error scheduling notification: $e',
+      );
     }
   }
 
   Future<void> _scanBarcode() async {
     final barcode = await Navigator.push<String>(
       context,
-
-      MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
+      MaterialPageRoute(
+        builder: (_) => const BarcodeScannerScreen(),
+      ),
     );
 
     logger.i('📷 Barcode received: $barcode');
@@ -339,33 +327,25 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
       try {
         final userId = supabase.auth.currentUser?.id;
 
-        if (userId == null) throw Exception('User not logged in');
+        if (userId == null) {
+          throw Exception('User not logged in');
+        }
 
-        logger.i('🔍 Checking barcode_lookups for: "$cleanBarcode"');
-
-        final barcodeData =
-            await supabase
-                .from('barcode_lookups')
-                .select('barcode, medication_name, dosage')
-                .eq('barcode', cleanBarcode)
-                .maybeSingle();
-
-        logger.i('📊 Query result: $barcodeData');
+        final barcodeData = await supabase
+            .from('barcode_lookups')
+            .select(
+              'barcode, medication_name, dosage',
+            )
+            .eq('barcode', cleanBarcode)
+            .maybeSingle();
 
         if (barcodeData != null) {
-          logger.i(
-            '✅ FOUND! Name: ${barcodeData['medication_name']}, Dosage: ${barcodeData['dosage']}',
-          );
-
-          // Check if user already has this medication
-
-          final userHasMed =
-              await supabase
-                  .from('medications')
-                  .select('id, name')
-                  .eq('user_id', userId)
-                  .eq('barcode', cleanBarcode)
-                  .maybeSingle();
+          final userHasMed = await supabase
+              .from('medications')
+              .select('id, name')
+              .eq('user_id', userId)
+              .eq('barcode', cleanBarcode)
+              .maybeSingle();
 
           if (userHasMed != null) {
             if (mounted) {
@@ -374,7 +354,6 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                   content: Text(
                     'You already have ${userHasMed['name']} in your list',
                   ),
-
                   backgroundColor: Colors.orange,
                 ),
               );
@@ -383,122 +362,116 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
             return;
           }
 
-          // Open form with pre-filled data
-
           if (mounted) {
-            logger.i('🎨 Opening form with pre-filled data...');
-
-            final result = await Navigator.push<Map<String, dynamic>>(
+            final result =
+                await Navigator.push<Map<String, dynamic>>(
               context,
-
               MaterialPageRoute(
-                builder:
-                    (_) => AddMedicationScreen(
-                      initialData: {
-                        'name': barcodeData['medication_name'],
-
-                        'dosage': barcodeData['dosage'],
-
-                        'barcode': barcodeData['barcode'],
-
-                        'stock_quantity': 30,
-
-                        'frequency': 'Once daily',
-                      },
-                    ),
+                builder: (_) => AddMedicationScreen(
+                  initialData: {
+                    'name':
+                        barcodeData['medication_name'],
+                    'dosage':
+                        barcodeData['dosage'],
+                    'barcode':
+                        barcodeData['barcode'],
+                    'stock_quantity': 30,
+                    'frequency': 'Once daily',
+                  },
+                ),
               ),
             );
 
-            logger.i('📋 Form returned: $result');
-
             if (result != null && mounted) {
-              await _saveMedicationFromBarcode(result, userId);
-            } else {
-              logger.w('⚠️ User cancelled form');
+              await _saveMedicationFromBarcode(
+                result,
+                userId,
+              );
             }
           }
         } else {
-          logger.w('❌ Barcode not found in database: $cleanBarcode');
-
           if (mounted) {
-            final shouldCreate = await showDialog<bool>(
+            final shouldCreate =
+                await showDialog<bool>(
               context: context,
-
-              builder:
-                  (context) => AlertDialog(
-                    title: const Text('New Medication'),
-
-                    content: Text(
-                      'Barcode "$cleanBarcode" not found.\n\nWould you like to add a new medication?',
-                    ),
-
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-
-                        child: const Text('Cancel'),
-                      ),
-
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context, true),
-
-                        child: const Text('Add New'),
-                      ),
-                    ],
+              builder: (context) => AlertDialog(
+                title: const Text(
+                  'New Medication',
+                ),
+                content: Text(
+                  'Barcode "$cleanBarcode" not found.\n\nWould you like to add a new medication?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pop(context, false),
+                    child: const Text('Cancel'),
                   ),
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.pop(context, true),
+                    child: const Text('Add New'),
+                  ),
+                ],
+              ),
             );
 
             if (shouldCreate == true && mounted) {
-              final result = await Navigator.push<Map<String, dynamic>>(
+              final result =
+                  await Navigator.push<Map<String, dynamic>>(
                 context,
-
                 MaterialPageRoute(
-                  builder:
-                      (_) => AddMedicationScreen(
-                        initialData: {
-                          'barcode': cleanBarcode,
-
-                          'stock_quantity': 30,
-                        },
-                      ),
+                  builder: (_) => AddMedicationScreen(
+                    initialData: {
+                      'barcode': cleanBarcode,
+                      'stock_quantity': 30,
+                    },
+                  ),
                 ),
               );
 
               if (result != null && mounted) {
-                await _saveMedicationFromBarcode(result, userId);
-
-                // Add to barcode_lookups for future
+                await _saveMedicationFromBarcode(
+                  result,
+                  userId,
+                );
 
                 try {
-                  await supabase.from('barcode_lookups').insert({
+                  await supabase
+                      .from('barcode_lookups')
+                      .insert({
                     'barcode': cleanBarcode,
-
-                    'medication_name': result['name'],
-
+                    'medication_name':
+                        result['name'],
                     'dosage': result['dosage'],
                   });
-
-                  logger.i('📊 Added to barcode_lookups');
                 } catch (e) {
-                  logger.w('⚠️ Could not add to barcode_lookups: $e');
+                  logger.w(
+                    '⚠️ Could not add to barcode_lookups: $e',
+                  );
                 }
               }
             }
           }
         }
       } catch (e, stackTrace) {
-        logger.e('❌ Error processing barcode: $e');
+        logger.e(
+          '❌ Error processing barcode: $e',
+        );
 
-        logger.e('Stack: $stackTrace');
+        logger.e(
+          'Stack: $stackTrace',
+        );
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: ${e.toString()}'),
-
-              backgroundColor: Colors.red,
-
-              duration: const Duration(seconds: 5),
+              content: Text(
+                'Error: ${e.toString()}',
+              ),
+              backgroundColor: danger,
+              duration:
+                  const Duration(seconds: 5),
             ),
           );
         }
@@ -508,51 +481,45 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   Future<void> _saveMedicationFromBarcode(
     Map<String, dynamic> medicationData,
-
     String userId,
   ) async {
     try {
       medicationData['user_id'] = userId;
 
-      logger.i('💾 Saving: ${medicationData['name']}');
+      final insertedData = await supabase
+          .from('medications')
+          .insert(medicationData)
+          .select()
+          .single();
 
-      logger.d('📦 Data: $medicationData');
-
-      final insertedData =
-          await supabase
-              .from('medications')
-              .insert(medicationData)
-              .select()
-              .single();
-
-      final newMed = Medication.fromJson(insertedData);
-
-      logger.i('✅ Saved with ID: ${newMed.id}');
-
-      // Schedule notifications
+      final newMed =
+          Medication.fromJson(insertedData);
 
       if (medicationData['reminder_times'] != null &&
           medicationData['reminder_times'] is List) {
-        final List<String> reminderTimes = List<String>.from(
+        final List<String> reminderTimes =
+            List<String>.from(
           medicationData['reminder_times'],
         );
 
-        logger.i('⏰ Scheduling ${reminderTimes.length} notifications');
+        for (int i = 0;
+            i < reminderTimes.length;
+            i++) {
+          final timeStr12Hour =
+              reminderTimes[i];
 
-        for (int i = 0; i < reminderTimes.length; i++) {
-          String timeStr12Hour = reminderTimes[i];
+          final timeStr24Hour =
+              _convert12To24Hour(
+            timeStr12Hour,
+          );
 
-          String timeStr24Hour = _convert12To24Hour(timeStr12Hour);
-
-          int notificationId = newMed.id * 100 + i;
+          final notificationId =
+              newMed.id * 100 + i;
 
           await _scheduleNotificationWithFCM(
             id: notificationId,
-
             medicationId: newMed.id,
-
             medicationName: newMed.name,
-
             timeStr: timeStr24Hour,
           );
         }
@@ -563,225 +530,210 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${newMed.name} added successfully! 🎉'),
-
-            backgroundColor: Colors.green,
+            content: Text(
+              '${newMed.name} added successfully! 🎉',
+            ),
+            backgroundColor: success,
           ),
         );
       }
     } catch (e, stackTrace) {
       logger.e('❌ Error saving: $e');
 
-      logger.e('Stack: $stackTrace');
+      logger.e(
+        'Stack: $stackTrace',
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save: ${e.toString()}'),
-
-            backgroundColor: Colors.red,
+            content: Text(
+              'Failed to save: ${e.toString()}',
+            ),
+            backgroundColor: danger,
           ),
         );
       }
     }
   }
 
-  Future<void> _editMedication(Medication med) async {
-    final result = await Navigator.push<Map<String, dynamic>>(
+  Future<void> _editMedication(
+    Medication med,
+  ) async {
+    final result =
+        await Navigator.push<Map<String, dynamic>>(
       context,
-
       MaterialPageRoute(
-        builder: (_) => AddMedicationScreen(initialData: med.toMap()),
+        builder: (_) => AddMedicationScreen(
+          initialData: med.toMap(),
+        ),
       ),
     );
 
-    if (result == null || !mounted) {
-      return;
-    }
+    if (result == null || !mounted) return;
 
     try {
       final dynamic idValue = result['id'];
 
       if (idValue == null) {
-        throw Exception('Medication ID is missing.');
+        throw Exception(
+          'Medication ID is missing.',
+        );
       }
 
-      final int id = idValue is int ? idValue : int.parse(idValue.toString());
+      final int id = idValue is int
+          ? idValue
+          : int.parse(idValue.toString());
 
-      final userId = supabase.auth.currentUser?.id;
+      final userId =
+          supabase.auth.currentUser?.id;
 
       if (userId == null) {
-        throw Exception('No user is logged in.');
+        throw Exception(
+          'No user is logged in.',
+        );
       }
 
-      // Make a copy so we don't modify
-
-      // the result returned by the edit screen.
-
-      final Map<String, dynamic> updateData = Map<String, dynamic>.from(result);
+      final updateData =
+          Map<String, dynamic>.from(result);
 
       updateData.remove('id');
 
-      logger.i('✏️ Updating medication ID: $id');
-
-      logger.i(
-        '⏰ New reminder times: '
-        '${updateData['reminder_times']}',
-      );
-
-      logger.i(
-        '📅 New next dose: '
-        '${updateData['next_dose']}',
-      );
-
-      // ------------------------------------------------------------
-
-      // UPDATE SUPABASE
-
-      // ------------------------------------------------------------
-
-      final updatedRows =
-          await supabase
-              .from('medications')
-              .update(updateData)
-              .eq('id', id)
-              .eq('user_id', userId)
-              .select();
+      final updatedRows = await supabase
+          .from('medications')
+          .update(updateData)
+          .eq('id', id)
+          .eq('user_id', userId)
+          .select();
 
       if (updatedRows.isEmpty) {
         throw Exception(
-          'Medication was not updated. '
-          'Check the user_id/RLS policy.',
+          'Medication was not updated. Check the user_id/RLS policy.',
         );
       }
 
-      logger.i('✅ Medication updated successfully');
+      await _cancelAllNotificationsForMedication(
+        id,
+      );
 
-      logger.i('💾 Database result: $updatedRows');
+      final dynamic reminderData =
+          updateData['reminder_times'];
 
-      // ------------------------------------------------------------
+      if (reminderData is List &&
+          reminderData.isNotEmpty) {
+        final reminderTimes = reminderData
+            .map((time) => time.toString())
+            .toList();
 
-      // CANCEL OLD NOTIFICATIONS
+        for (
+          int i = 0;
+          i < reminderTimes.length;
+          i++
+        ) {
+          final timeStr12Hour =
+              reminderTimes[i];
 
-      // ------------------------------------------------------------
+          final timeStr24Hour =
+              _convert12To24Hour(
+            timeStr12Hour,
+          );
 
-      await _cancelAllNotificationsForMedication(id);
-
-      // ------------------------------------------------------------
-
-      // SCHEDULE NEW NOTIFICATIONS
-
-      // ------------------------------------------------------------
-
-      final dynamic reminderData = updateData['reminder_times'];
-
-      if (reminderData is List && reminderData.isNotEmpty) {
-        final List<String> reminderTimes =
-            reminderData.map((time) => time.toString()).toList();
-
-        logger.i(
-          '⏰ Scheduling '
-          '${reminderTimes.length} new reminders',
-        );
-
-        for (int i = 0; i < reminderTimes.length; i++) {
-          final String timeStr12Hour = reminderTimes[i];
-
-          final String timeStr24Hour = _convert12To24Hour(timeStr12Hour);
-
-          final int notificationId = id * 100 + i;
+          final notificationId =
+              id * 100 + i;
 
           await _scheduleNotificationWithFCM(
             id: notificationId,
-
             medicationId: id,
-
-            medicationName: updateData['name']?.toString() ?? med.name,
-
+            medicationName:
+                updateData['name']?.toString() ??
+                    med.name,
             timeStr: timeStr24Hour,
-          );
-
-          logger.i(
-            '🔔 Notification scheduled: '
-            '$timeStr12Hour',
           );
         }
       }
 
-      // ------------------------------------------------------------
-
-      // IMPORTANT:
-
-      // FETCH THE MEDICATION AGAIN FROM SUPABASE
-
-      // ------------------------------------------------------------
-
       await _refreshList();
 
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Medication updated successfully! ✓'),
-
-          backgroundColor: Colors.green,
+          content: Text(
+            'Medication updated successfully! ✓',
+          ),
+          backgroundColor: success,
         ),
       );
     } catch (e, stackTrace) {
-      logger.e('❌ Failed to update medication: $e');
+      logger.e(
+        '❌ Failed to update medication: $e',
+      );
 
-      logger.e('Stack trace: $stackTrace');
+      logger.e(
+        'Stack trace: $stackTrace',
+      );
 
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to update medication: $e'),
-
-          backgroundColor: Colors.red,
+          content: Text(
+            'Failed to update medication: $e',
+          ),
+          backgroundColor: danger,
         ),
       );
     }
   }
 
-  Future<void> _cancelAllNotificationsForMedication(int medicationId) async {
+  Future<void> _cancelAllNotificationsForMedication(
+    int medicationId,
+  ) async {
     try {
-      logger.i('🔕 Cancelling all notifications for: $medicationId');
-
       for (int i = 0; i < 10; i++) {
-        int notificationId = medicationId * 100 + i;
+        final notificationId =
+            medicationId * 100 + i;
 
-        await NotificationService.cancelNotification(notificationId);
+        await NotificationService
+            .cancelNotification(
+          notificationId,
+        );
       }
 
-      final userId = supabase.auth.currentUser?.id;
+      final userId =
+          supabase.auth.currentUser?.id;
 
       if (userId != null) {
         await supabase
             .from('scheduled_notifications')
             .delete()
-            .eq('medication_id', medicationId)
-            .eq('user_id', userId);
+            .eq(
+              'medication_id',
+              medicationId,
+            )
+            .eq(
+              'user_id',
+              userId,
+            );
       }
-
-      logger.i('✅ All notifications cancelled');
     } catch (e) {
-      logger.e('❌ Error cancelling notifications: $e');
+      logger.e(
+        '❌ Error cancelling notifications: $e',
+      );
     }
   }
 
-  Future<void> _deleteMedication(int id) async {
+  Future<void> _deleteMedication(
+    int id,
+  ) async {
     try {
-      logger.i('🗑️ Deleting medication ID: $id');
-
-      final userId = supabase.auth.currentUser?.id;
+      final userId =
+          supabase.auth.currentUser?.id;
 
       if (userId == null) {
-        throw Exception('No user logged in');
+        throw Exception(
+          'No user logged in',
+        );
       }
 
       final deletedRows = await supabase
@@ -797,28 +749,36 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
         );
       }
 
-      logger.i('✅ Deleted from database: $deletedRows');
-
-      await _cancelAllNotificationsForMedication(id);
+      await _cancelAllNotificationsForMedication(
+        id,
+      );
 
       await _refreshList();
     } catch (e) {
-      logger.e('❌ Failed to delete: $e');
+      logger.e(
+        '❌ Failed to delete: $e',
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete: $e'),
-
-            backgroundColor: Colors.red,
+            content: Text(
+              'Failed to delete: $e',
+            ),
+            backgroundColor: danger,
           ),
         );
       }
     }
   }
 
-  Future<void> _handleDismiss(int index) async {
-    if (index < 0 || index >= _medicationsList.length) return;
+  Future<void> _handleDismiss(
+    int index,
+  ) async {
+    if (index < 0 ||
+        index >= _medicationsList.length) {
+      return;
+    }
 
     final med = _medicationsList[index];
 
@@ -828,588 +788,935 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${med.name} deleted'),
-
-        duration: const Duration(seconds: 2),
+        content: Text(
+          '${med.name} deleted',
+        ),
+        duration:
+            const Duration(seconds: 2),
       ),
     );
   }
 
-  String _formatDisplayTime(String? isoString) {
-    if (isoString == null) return 'No Time';
+  String _formatDisplayTime(
+    String? isoString,
+  ) {
+    if (isoString == null) {
+      return 'No Time';
+    }
 
     try {
-      final dt = DateTime.parse(isoString);
+      final dt = DateTime.parse(
+        isoString,
+      );
 
-      return DateFormat('h:mm a').format(dt);
-    } catch (e) {
+      return DateFormat(
+        'h:mm a',
+      ).format(dt);
+    } catch (_) {
       return 'Invalid Time';
     }
   }
 
-  Future<void> _rescheduleNotifications(List<Medication> medications) async {
+  Future<void> _rescheduleNotifications(
+    List<Medication> medications,
+  ) async {
     try {
-      logger.i('🔄 Rescheduling notifications...');
+      for (final med in medications) {
+        if (med.reminderTimes != null &&
+            med.reminderTimes!.isNotEmpty) {
+          for (
+            int i = 0;
+            i < med.reminderTimes!.length;
+            i++
+          ) {
+            final timeStr12Hour =
+                med.reminderTimes![i];
 
-      for (var med in medications) {
-        if (med.reminderTimes != null && med.reminderTimes!.isNotEmpty) {
-          for (int i = 0; i < med.reminderTimes!.length; i++) {
-            String timeStr12Hour = med.reminderTimes![i];
+            final timeStr24Hour =
+                _convert12To24Hour(
+              timeStr12Hour,
+            );
 
-            String timeStr24Hour = _convert12To24Hour(timeStr12Hour);
-
-            int notificationId = med.id * 100 + i;
+            final notificationId =
+                med.id * 100 + i;
 
             await _scheduleNotificationWithFCM(
               id: notificationId,
-
               medicationId: med.id,
-
               medicationName: med.name,
-
               timeStr: timeStr24Hour,
             );
           }
         }
       }
-
-      logger.i('✅ All notifications rescheduled');
     } catch (e) {
-      logger.e('❌ Error rescheduling: $e');
+      logger.e(
+        '❌ Error rescheduling notifications: $e',
+      );
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final scheme = theme.colorScheme;
-
+  Widget build(
+    BuildContext context,
+  ) {
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: pageBackground,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints:
+                const BoxConstraints(
+              maxWidth: 430,
+            ),
+            child:
+                FutureBuilder<List<Medication>>(
+              future: _medicationsFuture,
+              builder: (
+                context,
+                snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return _buildMessageState(
+                    icon:
+                        Icons.error_outline_rounded,
+                    title:
+                        'Something went wrong',
+                    message:
+                        'Unable to load your medications.',
+                    action: TextButton(
+                      onPressed:
+                          _refreshList,
+                      child:
+                          const Text('Try again'),
+                    ),
+                  );
+                }
 
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
+                if (snapshot.connectionState ==
+                        ConnectionState.waiting &&
+                    _medicationsList.isEmpty) {
+                  return const Center(
+                    child:
+                        CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: purple,
+                    ),
+                  );
+                }
 
-        elevation: 0,
+                return RefreshIndicator(
+                  onRefresh: _refreshList,
+                  color: purple,
+                  child: ListView(
+                    physics:
+                        const AlwaysScrollableScrollPhysics(),
+                    padding:
+                        const EdgeInsets.fromLTRB(
+                      12,
+                      10,
+                      12,
+                      170,
+                    ),
+                    children: [
+                      _buildDashboardHeader(),
+                      const SizedBox(height: 12),
+                      _buildDashboardStats(),
+                      const SizedBox(height: 10),
+                      _buildMedicationSection(),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-        scrolledUnderElevation: 0,
+  Widget _buildDashboardHeader() {
+    return Container(
+      height: 122,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFFEFE7FF),
+            Color(0xFFDCD0FF),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius:
+            BorderRadius.circular(18),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Stack(
+        children: [
+          Positioned(
+            top: -32,
+            right: 54,
+            child: Container(
+              width: 82,
+              height: 82,
+              decoration: BoxDecoration(
+                color: Colors.white
+                    .withOpacity(0.22),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
 
-        backgroundColor: Colors.transparent,
+          Positioned(
+            right: -8,
+            bottom: -10,
+            child: Image.asset(
+              'assets/images/home_doctor.png',
+              width: 150,
+              height: 124,
+              fit: BoxFit.contain,
+              errorBuilder:
+                  (_, __, ___) =>
+                      const SizedBox.shrink(),
+            ),
+          ),
 
-        titleSpacing: 0,
+          Positioned(
+            left: 12,
+            top: 9,
+            child: Row(
+              children: [
+                Container(
+                  width: 22,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: Colors.white
+                        .withOpacity(0.9),
+                    borderRadius:
+                        BorderRadius.circular(6),
+                  ),
+                  child: const Icon(
+                    Icons.medication_rounded,
+                    color: purple,
+                    size: 13,
+                  ),
+                ),
+                const SizedBox(width: 5),
+                const Text(
+                  'MediMate',
+                  style: TextStyle(
+                    color: textDark,
+                    fontSize: 10,
+                    fontWeight:
+                        FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          Positioned(
+            right: 9,
+            top: 7,
+            child: Row(
+              children: [
+                _headerAction(
+                  icon:
+                      Icons.qr_code_scanner_rounded,
+                  onTap: _scanBarcode,
+                ),
+                const SizedBox(width: 5),
+                GestureDetector(
+                  onTap: _addMedication,
+                  child: Container(
+                    width: 27,
+                    height: 27,
+                    decoration:
+                        const BoxDecoration(
+                      color: purple,
+                      shape:
+                          BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.add_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
+          const Positioned(
+            left: 12,
+            top: 46,
+            child: Text(
+              'Good morning,',
+              style: TextStyle(
+                color: textMuted,
+                fontSize: 9,
+                fontWeight:
+                    FontWeight.w500,
+              ),
+            ),
+          ),
+
+          const Positioned(
+            left: 12,
+            top: 62,
+            child: Text(
+              'Aiswarya 👋',
+              style: TextStyle(
+                color: textDark,
+                fontSize: 19,
+                fontWeight:
+                    FontWeight.w900,
+              ),
+            ),
+          ),
+
+          const Positioned(
+            left: 12,
+            top: 88,
+            child: Text(
+              'Take care of your health today!',
+              style: TextStyle(
+                color: textMuted,
+                fontSize: 8,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _headerAction({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 27,
+        height: 27,
+        decoration:
+            const BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: purple,
+          size: 14,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardStats() {
+    final medicineCount =
+        _medicationsList.length;
+
+    final todayCount =
+        _medicationsList.length;
+
+    final reminderCount =
+        _medicationsList.fold<int>(
+      0,
+      (sum, med) =>
+          sum +
+          (med.reminderTimes?.length ?? 0),
+    );
+
+    return Container(
+      height: 76,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius:
+            BorderRadius.circular(17),
+        border: Border.all(
+          color: const Color(
+            0xFFE9E1F5,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color:
+                purple.withOpacity(0.04),
+            blurRadius: 10,
+            offset:
+                const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _statItem(
+              Icons.medication_rounded,
+              medicineCount.toString(),
+              'Medicines',
+            ),
+          ),
+
+          _statDivider(),
+
+          Expanded(
+            child: _statItem(
+              Icons.schedule_rounded,
+              todayCount.toString(),
+              'Today',
+            ),
+          ),
+
+          _statDivider(),
+
+          Expanded(
+            child: _statItem(
+              Icons
+                  .notifications_active_rounded,
+              reminderCount.toString(),
+              'Reminders',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _statDivider() {
+    return Container(
+      width: 1,
+      height: 30,
+      color:
+          const Color(0xFFE8E0F2),
+    );
+  }
+
+  Widget _statItem(
+    IconData icon,
+    String value,
+    String label,
+  ) {
+    return Column(
+      mainAxisAlignment:
+          MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: lavender,
+            borderRadius:
+                BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: purple,
+            size: 15,
+          ),
+        ),
+
+        const SizedBox(height: 3),
+
+        Text(
+          value,
+          style: const TextStyle(
+            color: textDark,
+            fontSize: 13,
+            fontWeight:
+                FontWeight.w900,
+          ),
+        ),
+
+        Text(
+          label,
+          style: const TextStyle(
+            color: textMuted,
+            fontSize: 7,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMedicationSection() {
+    return Column(
+      crossAxisAlignment:
+          CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            const Text(
-              'My Medications',
-
-              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+            const Expanded(
+              child: Text(
+                'My Medications',
+                style: TextStyle(
+                  color: textDark,
+                  fontSize: 13,
+                  fontWeight:
+                      FontWeight.w900,
+                ),
+              ),
             ),
 
-            Text(
-              '${_medicationsList.length} '
-              '${_medicationsList.length == 1 ? 'medicine' : 'medicines'}',
-
-              style: TextStyle(
-                fontSize: 12,
-
-                fontWeight: FontWeight.w400,
-
-                color: theme.textTheme.bodySmall?.color?.withOpacity(0.65),
+            GestureDetector(
+              onTap: _refreshList,
+              child: const Text(
+                'View all',
+                style: TextStyle(
+                  color: purple,
+                  fontSize: 7,
+                  fontWeight:
+                      FontWeight.w700,
+                ),
               ),
             ),
           ],
         ),
 
-        actions: [
-          if (_fcmToken != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 2),
+        const SizedBox(height: 6),
 
-              child: Tooltip(
-                message: 'Notifications enabled',
+        if (_medicationsList.isEmpty)
+          _buildEmptyState()
+        else
+          ...List.generate(
+            _medicationsList.length,
+            (index) {
+              final med =
+                  _medicationsList[index];
 
-                child: Icon(
-                  Icons.notifications_active_rounded,
+              final displayTime =
+                  _formatDisplayTime(
+                med.nextDose,
+              );
 
-                  color: Colors.green.shade400,
-
-                  size: 21,
+              return Padding(
+                padding:
+                    const EdgeInsets.only(
+                  bottom: 8,
                 ),
+                child: Dismissible(
+                  key: Key(
+                    med.id.toString(),
+                  ),
+                  direction:
+                      DismissDirection
+                          .endToStart,
+                  background: Container(
+                    decoration:
+                        BoxDecoration(
+                      color: danger
+                          .withOpacity(
+                        0.12,
+                      ),
+                      borderRadius:
+                          BorderRadius.circular(
+                        14,
+                      ),
+                    ),
+                    alignment:
+                        Alignment.centerRight,
+                    padding:
+                        const EdgeInsets.only(
+                      right: 18,
+                    ),
+                    child: const Icon(
+                      Icons
+                          .delete_outline_rounded,
+                      color: danger,
+                      size: 22,
+                    ),
+                  ),
+                  onDismissed: (_) =>
+                      _handleDismiss(
+                    index,
+                  ),
+                  child:
+                      MedicationCard(
+                    name: med.name,
+                    dosage:
+                        med.dosage ?? '',
+                    nextDose:
+                        displayTime,
+                    reminderTimes:
+                        med.reminderTimes,
+                    stockQuantity:
+                        med.stockQuantity,
+                    onTap: () =>
+                        _editMedication(
+                      med,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      width: double.infinity,
+      padding:
+          const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 25,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius:
+            BorderRadius.circular(16),
+        border: Border.all(
+          color:
+              const Color(0xFFE5DCF4),
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color: lavender,
+              borderRadius:
+                  BorderRadius.circular(
+                17,
               ),
             ),
-
-          IconButton(
-            onPressed: _scanBarcode,
-
-            tooltip: 'Scan medicine barcode',
-
-            icon: const Icon(Icons.qr_code_scanner_rounded),
+            child: const Icon(
+              Icons.medication_outlined,
+              color: purple,
+              size: 28,
+            ),
           ),
 
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
+          const SizedBox(height: 10),
 
-            child: IconButton(
-              onPressed: _addMedication,
+          const Text(
+            'No medications yet',
+            style: TextStyle(
+              color: textDark,
+              fontSize: 15,
+              fontWeight:
+                  FontWeight.w800,
+            ),
+          ),
 
-              tooltip: 'Add medication',
+          const SizedBox(height: 5),
 
-              icon: Container(
-                width: 38,
+          const Text(
+            'Add a medicine manually or scan its barcode.',
+            textAlign:
+                TextAlign.center,
+            style: TextStyle(
+              color: textMuted,
+              fontSize: 9,
+            ),
+          ),
 
-                height: 38,
+          const SizedBox(height: 12),
 
-                decoration: BoxDecoration(
-                  color: scheme.primary,
-
-                  borderRadius: BorderRadius.circular(12),
-                ),
-
-                child: const Icon(
-                  Icons.add_rounded,
-
-                  color: Colors.white,
-
-                  size: 24,
+          ElevatedButton.icon(
+            onPressed:
+                _addMedication,
+            icon: const Icon(
+              Icons.add_rounded,
+              size: 16,
+            ),
+            label: const Text(
+              'Add Medication',
+            ),
+            style:
+                ElevatedButton.styleFrom(
+              backgroundColor:
+                  purple,
+              foregroundColor:
+                  Colors.white,
+              padding:
+                  const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 10,
+              ),
+              shape:
+                  RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(
+                  11,
                 ),
               ),
             ),
           ),
         ],
       ),
-
-      body: FutureBuilder<List<Medication>>(
-        future: _medicationsFuture,
-
-        builder: (context, snapshot) {
-          // -----------------------------
-
-          // ERROR
-
-          // -----------------------------
-
-          if (snapshot.hasError) {
-            return _buildMessageState(
-              context,
-
-              icon: Icons.error_outline_rounded,
-
-              title: 'Something went wrong',
-
-              message: 'Unable to load your medications.',
-
-              action: TextButton(
-                onPressed: _refreshList,
-
-                child: const Text('Try again'),
-              ),
-            );
-          }
-
-          // -----------------------------
-
-          // LOADING
-
-          // -----------------------------
-
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              _medicationsList.isEmpty) {
-            return Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-
-                color: scheme.primary,
-              ),
-            );
-          }
-
-          // -----------------------------
-
-          // EMPTY STATE
-
-          // -----------------------------
-
-          if (_medicationsList.isEmpty) {
-            return _buildMessageState(
-              context,
-
-              icon: Icons.medication_outlined,
-
-              title: 'No medications yet',
-
-              message:
-                  'Add a medicine manually or scan its barcode\nto get started.',
-
-              action: FilledButton.icon(
-                onPressed: _addMedication,
-
-                icon: const Icon(Icons.add_rounded),
-
-                label: const Text('Add medication'),
-              ),
-            );
-          }
-
-          // -----------------------------
-
-          // MEDICATION LIST
-
-          // -----------------------------
-
-          return RefreshIndicator(
-            onRefresh: () async {
-              _refreshList();
-
-              await _medicationsFuture;
-            },
-
-            color: scheme.primary,
-
-            child: SafeArea(
-              child: ListView.separated(
-                physics: const AlwaysScrollableScrollPhysics(),
-
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 90),
-
-                itemCount: _medicationsList.length,
-
-                separatorBuilder: (_, __) {
-                  return const SizedBox(height: 10);
-                },
-
-                itemBuilder: (context, index) {
-                  final med = _medicationsList[index];
-
-                  final displayTime = _formatDisplayTime(med.nextDose);
-
-                  return Dismissible(
-                    key: Key(med.id.toString()),
-
-                    direction: DismissDirection.endToStart,
-
-                    background: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.14),
-
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-
-                      alignment: Alignment.centerRight,
-
-                      padding: const EdgeInsets.only(right: 22),
-
-                      child: Icon(
-                        Icons.delete_outline_rounded,
-
-                        color: Colors.red.shade400,
-
-                        size: 25,
-                      ),
-                    ),
-
-                    onDismissed: (_) {
-                      _handleDismiss(index);
-                    },
-
-                    child: MedicationCard(
-                      name: med.name,
-
-                      dosage: med.dosage ?? '',
-
-                      nextDose: displayTime,
-
-                      reminderTimes: med.reminderTimes,
-
-                      onTap: () {
-                        _editMedication(med);
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 
-  // ============================================================
-
-  // EMPTY / ERROR MESSAGE
-
-  // ============================================================
-
-  Widget _buildMessageState(
-    BuildContext context, {
-
+  Widget _buildMessageState({
     required IconData icon,
-
     required String title,
-
     required String message,
-
     Widget? action,
   }) {
-    final theme = Theme.of(context);
-
-    final scheme = theme.colorScheme;
-
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-
-          children: [
-            Container(
-              width: 76,
-
-              height: 76,
-
-              decoration: BoxDecoration(
-                color: scheme.primary.withOpacity(0.10),
-
-                shape: BoxShape.circle,
+        padding:
+            const EdgeInsets.symmetric(
+          horizontal: 32,
+        ),
+        child: Container(
+          padding:
+              const EdgeInsets.all(26),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius:
+                BorderRadius.circular(26),
+            border: Border.all(
+              color:
+                  const Color(0xFFE5DCF4),
+            ),
+          ),
+          child: Column(
+            mainAxisSize:
+                MainAxisSize.min,
+            children: [
+              Container(
+                width: 76,
+                height: 76,
+                decoration:
+                    const BoxDecoration(
+                  color: lavender,
+                  shape:
+                      BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: 36,
+                  color: purple,
+                ),
               ),
 
-              child: Icon(icon, size: 36, color: scheme.primary),
-            ),
-
-            const SizedBox(height: 18),
-
-            Text(
-              title,
-
-              textAlign: TextAlign.center,
-
-              style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
-            ),
-
-            const SizedBox(height: 7),
-
-            Text(
-              message,
-
-              textAlign: TextAlign.center,
-
-              style: TextStyle(
-                height: 1.45,
-
-                fontSize: 14,
-
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.62),
+              const SizedBox(
+                height: 18,
               ),
-            ),
 
-            if (action != null) ...[const SizedBox(height: 20), action],
-          ],
+              Text(
+                title,
+                textAlign:
+                    TextAlign.center,
+                style: const TextStyle(
+                  color: textDark,
+                  fontSize: 19,
+                  fontWeight:
+                      FontWeight.w800,
+                ),
+              ),
+
+              const SizedBox(
+                height: 7,
+              ),
+
+              Text(
+                message,
+                textAlign:
+                    TextAlign.center,
+                style: const TextStyle(
+                  height: 1.45,
+                  fontSize: 13,
+                  color: textMuted,
+                ),
+              ),
+
+              if (action != null) ...[
+                const SizedBox(
+                  height: 20,
+                ),
+                action,
+              ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-// ============================================================
+class MedicationCard
+    extends StatelessWidget {
+  static const Color purple =
+      Color(0xFF7C3AED);
 
-// MEDICATION CARD
+  static const Color lavender =
+      Color(0xFFF3EEFF);
 
-// ============================================================
+  static const Color textDark =
+      Color(0xFF211738);
 
-class MedicationCard extends StatelessWidget {
+  static const Color textMuted =
+      Color(0xFF716A80);
+
   final String name;
-
   final String dosage;
-
   final String nextDose;
-
   final List<String>? reminderTimes;
-
+  final int? stockQuantity;
   final VoidCallback onTap;
 
   const MedicationCard({
     super.key,
-
     required this.name,
-
     required this.dosage,
-
     required this.nextDose,
-
     required this.reminderTimes,
-
     required this.onTap,
+    required this.stockQuantity,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget build(
+    BuildContext context,
+  ) {
+    final hasReminders =
+        reminderTimes != null &&
+            reminderTimes!.isNotEmpty;
 
-    final scheme = theme.colorScheme;
-
-    final hasReminders = reminderTimes != null && reminderTimes!.isNotEmpty;
+    final timeText = hasReminders
+        ? reminderTimes!.join(
+            '  •  ',
+          )
+        : nextDose;
 
     return Material(
       color: Colors.transparent,
-
       child: InkWell(
         onTap: onTap,
-
-        borderRadius: BorderRadius.circular(18),
-
-        child: Container(
-          padding: const EdgeInsets.all(16),
-
+        borderRadius:
+            BorderRadius.circular(14),
+        child: Ink(
+          height: 88,
+          padding:
+              const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 9,
+          ),
           decoration: BoxDecoration(
-            color: theme.cardColor,
-
-            borderRadius: BorderRadius.circular(18),
-
-            border: Border.all(color: theme.dividerColor.withOpacity(0.08)),
-
+            color: Colors.white,
+            borderRadius:
+                BorderRadius.circular(14),
+            border: Border.all(
+              color:
+                  const Color(0xFFE7DFF5),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.07),
-
-                blurRadius: 12,
-
-                offset: const Offset(0, 4),
+                color: purple
+                    .withOpacity(0.045),
+                blurRadius: 8,
+                offset:
+                    const Offset(0, 2),
               ),
             ],
           ),
-
           child: Row(
             children: [
-              // ------------------------------------------------
-
-              // MEDICINE ICON
-
-              // ------------------------------------------------
               Container(
-                width: 54,
-
-                height: 54,
-
-                decoration: BoxDecoration(
-                  color: scheme.primary.withOpacity(0.12),
-
-                  borderRadius: BorderRadius.circular(16),
+                width: 48,
+                height: 48,
+                decoration:
+                    BoxDecoration(
+                  color: lavender,
+                  borderRadius:
+                      BorderRadius.circular(
+                    14,
+                  ),
                 ),
-
-                child: Icon(
+                child: const Icon(
                   Icons.medication_rounded,
-
-                  color: scheme.primary,
-
-                  size: 28,
+                  color: purple,
+                  size: 25,
                 ),
               ),
 
-              const SizedBox(width: 15),
+              const SizedBox(
+                width: 11,
+              ),
 
-              // ------------------------------------------------
-
-              // MEDICINE DETAILS
-
-              // ------------------------------------------------
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-
+                  crossAxisAlignment:
+                      CrossAxisAlignment
+                          .start,
+                  mainAxisAlignment:
+                      MainAxisAlignment
+                          .center,
                   children: [
-                    // Medicine name
                     Text(
                       name,
-
                       maxLines: 1,
-
-                      overflow: TextOverflow.ellipsis,
-
-                      style: const TextStyle(
-                        fontSize: 17,
-
-                        fontWeight: FontWeight.w700,
+                      overflow:
+                          TextOverflow
+                              .ellipsis,
+                      style:
+                          const TextStyle(
+                        color: textDark,
+                        fontSize: 12,
+                        fontWeight:
+                            FontWeight.w800,
                       ),
                     ),
 
-                    const SizedBox(height: 4),
+                    const SizedBox(
+                      height: 2,
+                    ),
 
-                    // Dosage
                     Text(
-                      dosage,
-
+                      dosage.isEmpty
+                          ? '—'
+                          : dosage,
                       maxLines: 1,
-
-                      overflow: TextOverflow.ellipsis,
-
-                      style: TextStyle(
-                        fontSize: 13,
-
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(
-                          0.55,
-                        ),
+                      overflow:
+                          TextOverflow
+                              .ellipsis,
+                      style:
+                          const TextStyle(
+                        color: textMuted,
+                        fontSize: 8.5,
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(
+                      height: 6,
+                    ),
 
-                    // Reminder / next dose
                     Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(5),
-
-                          decoration: BoxDecoration(
-                            color: scheme.primary.withOpacity(0.10),
-
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-
-                          child: Icon(
-                            Icons.schedule_rounded,
-
-                            size: 14,
-
-                            color: scheme.primary,
-                          ),
+                        const Icon(
+                          Icons
+                              .schedule_rounded,
+                          color: purple,
+                          size: 12,
                         ),
 
-                        const SizedBox(width: 7),
-
-                        Text(
-                          hasReminders ? 'Reminder' : 'Next dose',
-
-                          style: TextStyle(
-                            fontSize: 12,
-
-                            color: theme.textTheme.bodyMedium?.color
-                                ?.withOpacity(0.55),
-                          ),
+                        const SizedBox(
+                          width: 4,
                         ),
-
-                        const SizedBox(width: 7),
 
                         Flexible(
                           child: Text(
-                            hasReminders
-                                ? reminderTimes!.join('  •  ')
-                                : nextDose,
-
+                            timeText,
                             maxLines: 1,
-
-                            overflow: TextOverflow.ellipsis,
-
-                            style: TextStyle(
-                              fontSize: 13,
-
-                              fontWeight: FontWeight.w700,
-
-                              color: scheme.primary,
+                            overflow:
+                                TextOverflow
+                                    .ellipsis,
+                            style:
+                                const TextStyle(
+                              color: purple,
+                              fontSize: 8,
+                              fontWeight:
+                                  FontWeight
+                                      .w700,
                             ),
                           ),
                         ),
@@ -1419,31 +1726,106 @@ class MedicationCard extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(width: 8),
+              const SizedBox(
+                width: 5,
+              ),
 
-              // ------------------------------------------------
+              Column(
+                mainAxisAlignment:
+                    MainAxisAlignment
+                        .center,
+                crossAxisAlignment:
+                    CrossAxisAlignment
+                        .end,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets
+                            .symmetric(
+                      horizontal: 8,
+                      vertical: 5,
+                    ),
+                    decoration:
+                        BoxDecoration(
+                      color:
+                          const Color(
+                        0xFFE8F8F0,
+                      ),
+                      borderRadius:
+                          BorderRadius
+                              .circular(
+                        10,
+                      ),
+                    ),
+                    child:
+                        const Row(
+                      mainAxisSize:
+                          MainAxisSize
+                              .min,
+                      children: [
+                        Icon(
+                          Icons
+                              .notifications_active_rounded,
+                          color:
+                              Color(
+                            0xFF159A6A,
+                          ),
+                          size: 9,
+                        ),
 
-              // EDIT ARROW
+                        SizedBox(
+                          width: 3,
+                        ),
 
-              // ------------------------------------------------
-              Container(
-                width: 34,
+                        Text(
+                          'Reminder on',
+                          style:
+                              TextStyle(
+                            color:
+                                Color(
+                              0xFF159A6A,
+                            ),
+                            fontSize: 6.5,
+                            fontWeight:
+                                FontWeight
+                                    .w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-                height: 34,
+                  const SizedBox(
+                    height: 5,
+                  ),
 
-                decoration: BoxDecoration(
-                  color: theme.dividerColor.withOpacity(0.06),
-
-                  borderRadius: BorderRadius.circular(10),
-                ),
-
-                child: Icon(
-                  Icons.chevron_right_rounded,
-
-                  size: 22,
-
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                ),
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration:
+                        BoxDecoration(
+                      color:
+                          const Color(
+                        0xFFF6F2FC,
+                      ),
+                      borderRadius:
+                          BorderRadius
+                              .circular(
+                        8,
+                      ),
+                    ),
+                    child:
+                        const Icon(
+                      Icons
+                          .chevron_right_rounded,
+                      size: 18,
+                      color:
+                          Color(
+                        0xFF8B829B,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

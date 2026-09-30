@@ -42,3 +42,7 @@ flutter:
     - assets/animations/
     - assets/images/
     - assets/icons/
+    - assets/images/home_doctor.png
+    - assets/images/hydration_bottle.png
+    - assets/images/stock_medicine.png
+    - assets/images/notification_bell.png

@@ -13,9 +13,7 @@ class AuthBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(
-        AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       child: Material(
         color: Colors.white,
         elevation: 4,
@@ -50,7 +48,6 @@ class AuthBackground extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Top-right purple glow
           Positioned(
             top: -120,
             right: -90,
@@ -63,8 +60,6 @@ class AuthBackground extends StatelessWidget {
               ),
             ),
           ),
-
-          // Top-left soft purple glow
           Positioned(
             top: 80,
             left: -150,
@@ -77,8 +72,6 @@ class AuthBackground extends StatelessWidget {
               ),
             ),
           ),
-
-          // Bottom-left stronger purple shape
           Positioned(
             bottom: -140,
             left: -100,
@@ -91,8 +84,6 @@ class AuthBackground extends StatelessWidget {
               ),
             ),
           ),
-
-          // Bottom-right purple glow
           Positioned(
             bottom: -100,
             right: -120,
@@ -105,8 +96,6 @@ class AuthBackground extends StatelessWidget {
               ),
             ),
           ),
-
-          // Small decorative purple circle
           Positioned(
             top: 180,
             right: 80,
@@ -119,8 +108,6 @@ class AuthBackground extends StatelessWidget {
               ),
             ),
           ),
-
-          // Small decorative circle
           Positioned(
             bottom: 180,
             left: 70,
@@ -133,7 +120,6 @@ class AuthBackground extends StatelessWidget {
               ),
             ),
           ),
-
           child,
         ],
       ),
@@ -158,25 +144,17 @@ class AuthHeader extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .headlineMedium
-              ?.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppColors.textPrimary,
               ),
         ),
-
         const SizedBox(
           height: AppSpacing.sm,
         ),
-
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: AppColors.textSecondary,
               ),
         ),
@@ -196,14 +174,10 @@ class AuthCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(
-        AppSpacing.lg,
-      ),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(
-          AppRadius.card,
-        ),
+        borderRadius: BorderRadius.circular(AppRadius.card),
         border: Border.all(
           color: AppColors.border,
           width: 1.2,
@@ -213,10 +187,7 @@ class AuthCard extends StatelessWidget {
             color: AppColors.primary.withAlpha(30),
             blurRadius: 35,
             spreadRadius: 2,
-            offset: const Offset(
-              0,
-              16,
-            ),
+            offset: const Offset(0, 16),
           ),
         ],
       ),
@@ -239,8 +210,7 @@ class PrimaryAuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool disabled =
-        onPressed == null || isLoading;
+    final bool disabled = onPressed == null || isLoading;
 
     return SizedBox(
       height: 56,
@@ -255,50 +225,34 @@ class PrimaryAuthButton extends StatelessWidget {
                   ],
                 )
               : AppColors.primaryGradient,
-
-          borderRadius: BorderRadius.circular(
-            AppRadius.button,
-          ),
-
+          borderRadius: BorderRadius.circular(AppRadius.button),
           boxShadow: disabled
               ? []
               : [
                   BoxShadow(
-                    color:
-                        AppColors.primary.withAlpha(65),
+                    color: AppColors.primary.withAlpha(65),
                     blurRadius: 16,
-                    offset: const Offset(
-                      0,
-                      7,
-                    ),
+                    offset: const Offset(0, 7),
                   ),
                 ],
         ),
         child: ElevatedButton(
-          onPressed: disabled
-              ? null
-              : onPressed,
+          onPressed: disabled ? null : onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
-            disabledBackgroundColor:
-                Colors.transparent,
+            disabledBackgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
             elevation: 0,
-
             foregroundColor: Colors.white,
-
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                AppRadius.button,
-              ),
+              borderRadius: BorderRadius.circular(AppRadius.button),
             ),
           ),
           child: isLoading
               ? const SizedBox(
                   width: 23,
                   height: 23,
-                  child:
-                      CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     strokeWidth: 2.5,
                     color: Colors.white,
                   ),
@@ -337,19 +291,14 @@ class AuthFooterLink extends StatelessWidget {
         if (question.isNotEmpty)
           Text(
             question,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
           ),
-
         if (question.isNotEmpty)
           const SizedBox(
             width: 5,
           ),
-
         GestureDetector(
           onTap: onTap,
           child: Text(
@@ -374,17 +323,13 @@ class AnimatedLogo extends StatefulWidget {
   });
 
   @override
-  State<AnimatedLogo> createState() =>
-      _AnimatedLogoState();
+  State<AnimatedLogo> createState() => _AnimatedLogoState();
 }
 
-class _AnimatedLogoState
-    extends State<AnimatedLogo>
+class _AnimatedLogoState extends State<AnimatedLogo>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-
-  late final Animation<double>
-      _scaleAnimation;
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -392,9 +337,7 @@ class _AnimatedLogoState
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(
-        milliseconds: 700,
-      ),
+      duration: const Duration(milliseconds: 700),
     );
 
     _scaleAnimation = CurvedAnimation(

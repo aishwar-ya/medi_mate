@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-// FIX: Use relative imports
-import 'hydration_screen.dart'; 
-import 'medication_list_screen.dart'; 
-import 'reminder_settings_screen.dart'; 
+
+import 'package:medi_mate/screens/medication_list_screen.dart';
+import 'package:medi_mate/screens/hydration_screen.dart';
+import 'package:medi_mate/screens/medicine_stock_screen.dart';
+import 'package:medi_mate/screens/reminder_settings_screen.dart';
+import 'package:medi_mate/screens/voice_reminder_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,48 +14,168 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  // 1. Controls which tab is currently selected
   int _currentIndex = 0;
 
-  // 2. A list of all your main screens
-  final List<Widget> _screens = [
+  static const Color primary = Color(0xFF7C3AED);
+  static const Color background = Color(0xFFF8F6FF);
+  static const Color muted = Color(0xFF8B829B);
+
+  late final List<Widget> _screens = [
     const MedicationListScreen(),
     const HydrationScreen(),
-    const ReminderSettingsScreen(), // Or a future "Profile" screen
+    const MedicineStockScreen(),
+    const ReminderSettingsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 3. Display the currently selected screen
+      backgroundColor: background,
+
+      // IMPORTANT:
+      // Do not wrap this body in Center, ConstrainedBox or SizedBox.
+      // The individual pages control their own 430px mobile-style layout.
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
-      
-      // 4. The Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          // 5. Update the state when a tab is tapped
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medication_liquid),
-            label: 'Medications',
+
+      // Voice reminder button
+      floatingActionButton: _currentIndex == 2
+          ? null
+          : FloatingActionButton(
+              mini: true,
+              backgroundColor: primary,
+              elevation: 5,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const VoiceReminderPage(),
+                  ),
+                );
+              },
+              child: const Icon(
+                Icons.mic_rounded,
+                color: Colors.white,
+                size: 19,
+              ),
+            ),
+
+      // Bottom navigation
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          height: 64,
+          color: background,
+          padding: const EdgeInsets.only(bottom: 2),
+          child: Center(
+            child: SizedBox(
+              width: 430,
+              height: 58,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(18),
+                      blurRadius: 12,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    _navItem(
+                      index: 0,
+                      icon: Icons.medication_rounded,
+                      label: 'Medications',
+                    ),
+                    _navItem(
+                      index: 1,
+                      icon: Icons.water_drop_rounded,
+                      label: 'Hydration',
+                    ),
+                    _navItem(
+                      index: 2,
+                      icon: Icons.inventory_2_rounded,
+                      label: 'Stock',
+                    ),
+                    _navItem(
+                      index: 3,
+                      icon: Icons.settings_rounded,
+                      label: 'Settings',
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.water_drop),
-            label: 'Hydration',
+        ),
+      ),
+    );
+  }
+
+  Widget _navItem({
+    required int index,
+    required IconData icon,
+    required String label,
+  }) {
+    final bool selected = _currentIndex == index;
+
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            if (_currentIndex != index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            }
+          },
+          borderRadius: BorderRadius.circular(14),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  curve: Curves.easeOut,
+                  width: selected ? 34 : 28,
+                  height: selected ? 25 : 22,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? primary.withAlpha(22)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: selected ? 18 : 17,
+                    color: selected ? primary : muted,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 8,
+                    height: 1,
+                    fontWeight:
+                        selected ? FontWeight.w700 : FontWeight.w500,
+                    color: selected ? primary : muted,
+                  ),
+                ),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+        ),
       ),
     );
   }

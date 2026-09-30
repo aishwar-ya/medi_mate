@@ -284,74 +284,128 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    const purple = Color(0xFF7C3AED);
+    const pageBackground = Color(0xFFF8F6FF);
+
+    // Keep the selected screen completely unconstrained here.
+    // The individual screens already handle their 430px mobile layout.
     return Scaffold(
+      backgroundColor: pageBackground,
       body: _screens[_currentIndex],
 
-      // =======================================================
-      // VOICE REMINDER BUTTON
-      // =======================================================
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            '/voice_reminder',
-          );
-        },
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(
-          Icons.mic,
-          color: Colors.white,
+      floatingActionButton: _currentIndex == 2
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/voice_reminder');
+              },
+              backgroundColor: purple,
+              mini: true,
+              child: const Icon(
+                Icons.mic,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          height: 62,
+          color: pageBackground,
+          child: Center(
+            child: SizedBox(
+              width: 430,
+              height: 58,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(18),
+                      blurRadius: 10,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    _bottomNavItem(
+                      0,
+                      Icons.medication_rounded,
+                      'Medications',
+                      purple,
+                    ),
+                    _bottomNavItem(
+                      1,
+                      Icons.water_drop_rounded,
+                      'Hydration',
+                      purple,
+                    ),
+                    _bottomNavItem(
+                      2,
+                      Icons.inventory_2_rounded,
+                      'Stock',
+                      purple,
+                    ),
+                    _bottomNavItem(
+                      3,
+                      Icons.settings_rounded,
+                      'Settings',
+                      purple,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
+    );
+  }
 
-      // =======================================================
-      // BOTTOM NAVIGATION
-      // =======================================================
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(26),
-              blurRadius: 4,
-              offset: const Offset(0, -2),
+  Widget _bottomNavItem(
+    int index,
+    IconData icon,
+    String label,
+    Color activeColor,
+  ) {
+    final selected = _currentIndex == index;
+
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        borderRadius: BorderRadius.circular(14),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: selected ? 21 : 19,
+              color: selected
+                  ? activeColor
+                  : const Color(0xFF9A91A8),
             ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          type: BottomNavigationBarType.fixed,
-          backgroundColor:
-              Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          selectedItemColor: Theme.of(context).primaryColor,
-          unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(
-            fontSize: 12,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 12,
-          ),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.medication),
-              label: 'Medications',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.water_drop),
-              label: 'Hydration',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.inventory),
-              label: 'Stock',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
+            const SizedBox(height: 3),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: selected
+                    ? activeColor
+                    : const Color(0xFF8B829B),
+                fontSize: 8.5,
+                fontWeight:
+                    selected ? FontWeight.w800 : FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -359,3 +413,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

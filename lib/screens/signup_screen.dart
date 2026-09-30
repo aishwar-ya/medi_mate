@@ -22,11 +22,20 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _obscureConfirmPassword = true;
   bool _agreedToTerms = false;
 
-  static const Color _darkText = Color(0xFF211738);
-  static const Color _mediumText = Color(0xFF71677F);
-  static const Color _purple = Color(0xFF6D28D9);
-  static const Color _lightPurple = Color(0xFF8B5CF6);
-  static const Color _fieldBackground = Color(0xFFFAF8FE);
+  static const Color _darkText =
+      Color(0xFF211738);
+
+  static const Color _mediumText =
+      Color(0xFF71677F);
+
+  static const Color _purple =
+      Color(0xFF6D28D9);
+
+  static const Color _lightPurple =
+      Color(0xFF8B5CF6);
+
+  static const Color _fieldBackground =
+      Color(0xFFFAF8FE);
 
   @override
   void dispose() {
@@ -37,9 +46,9 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  // ================================================================
+  // ============================================================
   // SIGN UP
-  // ================================================================
+  // ============================================================
 
   Future<void> _handleSignup() async {
     if (!_formKey.currentState!.validate()) {
@@ -59,9 +68,11 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     try {
-      final supabase = Supabase.instance.client;
+      final supabase =
+          Supabase.instance.client;
 
-      final response = await supabase.auth.signUp(
+      final response =
+          await supabase.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text,
         data: {
@@ -71,18 +82,25 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       if (response.user != null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
           SnackBar(
             content: Text(
               'Sign up successful! Please check your email at '
               '${_emailController.text.trim()} to confirm your account.',
             ),
-            backgroundColor: const Color(0xFF16A34A),
-            duration: const Duration(seconds: 6),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+            backgroundColor:
+                const Color(0xFF16A34A),
+            duration:
+                const Duration(seconds: 6),
+            behavior:
+                SnackBarBehavior.floating,
+            margin:
+                const EdgeInsets.all(20),
+            shape:
+                RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(14),
             ),
           ),
         );
@@ -122,337 +140,496 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  // ================================================================
+  // ============================================================
   // MESSAGE
-  // ================================================================
+  // ============================================================
 
   void _showMessage(
     String message, {
     bool error = false,
   }) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: error
             ? const Color(0xFFDC2626)
             : const Color(0xFF16A34A),
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+        behavior:
+            SnackBarBehavior.floating,
+        margin:
+            const EdgeInsets.all(20),
+        shape:
+            RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(14),
         ),
       ),
     );
   }
 
-  // ================================================================
+  // ============================================================
   // BUILD
-  // ================================================================
+  // ============================================================
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final isSmallScreen = size.width < 700;
+    final size =
+        MediaQuery.of(context).size;
+
+    final frameWidth =
+        size.width < 430
+            ? size.width
+            : 430.0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F0FF),
+      backgroundColor:
+          const Color(0xFFF6F0FF),
+
       body: SafeArea(
-        child: Stack(
-          children: [
-            // ========================================================
-            // BACKGROUND
-            // ========================================================
+        child: Center(
+          child: SizedBox(
+            width: frameWidth,
+            height: double.infinity,
 
-            Positioned(
-              top: -100,
-              left: -80,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE4D5FF),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
+            child: Stack(
+              children: [
 
-            Positioned(
-              top: -70,
-              right: -90,
-              child: Container(
-                width: 280,
-                height: 280,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFD8C5FF),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
+                // ==================================================
+                // BACKGROUND DECORATIONS
+                // ==================================================
 
-            Positioned(
-              bottom: -130,
-              left: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE9DEFF),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-
-            // ========================================================
-            // PURPLE CURVED HEADER
-            // ========================================================
-
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: ClipPath(
-                clipper: _HeaderClipper(),
-                child: Container(
-                  height: isSmallScreen ? 220 : 250,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF8B5CF6),
-                        Color(0xFF6D28D9),
-                      ],
+                Positioned(
+                  top: -100,
+                  left: -80,
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration:
+                        const BoxDecoration(
+                      color:
+                          Color(0xFFE4D5FF),
+                      shape:
+                          BoxShape.circle,
                     ),
                   ),
                 ),
-              ),
-            ),
 
-            // ========================================================
-            // BACK BUTTON
-            // ========================================================
-
-            Positioned(
-              top: 20,
-              left: 20,
-              child: Material(
-                color: Colors.white,
-                elevation: 4,
-                shadowColor: Colors.black26,
-                shape: const CircleBorder(),
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Icon(
-                      Icons.arrow_back_rounded,
-                      color: Color(0xFF5422B8),
-                      size: 24,
+                Positioned(
+                  top: -70,
+                  right: -90,
+                  child: Container(
+                    width: 280,
+                    height: 280,
+                    decoration:
+                        const BoxDecoration(
+                      color:
+                          Color(0xFFD8C5FF),
+                      shape:
+                          BoxShape.circle,
                     ),
                   ),
                 ),
-              ),
-            ),
 
-            // ========================================================
-            // DECORATIVE DOTS
-            // ========================================================
+                Positioned(
+                  bottom: -130,
+                  left: -100,
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration:
+                        const BoxDecoration(
+                      color:
+                          Color(0xFFE9DEFF),
+                      shape:
+                          BoxShape.circle,
+                    ),
+                  ),
+                ),
 
-            Positioned(
-              top: 32,
-              right: 30,
-              child: Column(
-                children: [
-                  Row(
+                // ==================================================
+                // PURPLE HEADER
+                // ==================================================
+
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+
+                  child: ClipPath(
+                    clipper:
+                        _HeaderClipper(),
+
+                    child: Container(
+                      height: 160,
+
+                      decoration:
+                          const BoxDecoration(
+                        gradient:
+                            LinearGradient(
+                          begin:
+                              Alignment.topLeft,
+                          end:
+                              Alignment.bottomRight,
+                          colors: [
+                            Color(
+                              0xFF8B5CF6,
+                            ),
+                            Color(
+                              0xFF6D28D9,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ==================================================
+                // MEDIMATE BRAND
+                // ==================================================
+
+                Positioned(
+                  top: 28,
+                  left: 0,
+                  right: 0,
+
+                  child: Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment
+                            .center,
+
                     children: [
-                      _dot(),
-                      const SizedBox(width: 8),
-                      _dot(),
-                      const SizedBox(width: 8),
-                      _dot(),
+                      Container(
+                        width: 34,
+                        height: 34,
+
+                        decoration:
+                            BoxDecoration(
+                          color: Colors
+                              .white
+                              .withOpacity(
+                            0.96,
+                          ),
+                          borderRadius:
+                              BorderRadius
+                                  .circular(
+                            11,
+                          ),
+                        ),
+
+                        child:
+                            const Icon(
+                          Icons
+                              .medication_rounded,
+                          color:
+                              Color(
+                            0xFF6D28D9,
+                          ),
+                          size: 22,
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 9,
+                      ),
+
+                      const Text(
+                        'MediMate',
+                        style:
+                            TextStyle(
+                          color:
+                              Colors.white,
+                          fontSize: 23,
+                          fontWeight:
+                              FontWeight
+                                  .w800,
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Row(
+                ),
+
+                // ==================================================
+                // BACK BUTTON
+                // ==================================================
+
+                Positioned(
+                  top: 20,
+                  left: 20,
+
+                  child: Material(
+                    color: Colors.white,
+                    elevation: 4,
+                    shadowColor:
+                        Colors.black26,
+                    shape:
+                        const CircleBorder(),
+
+                    child: InkWell(
+                      customBorder:
+                          const CircleBorder(),
+
+                      onTap: () {
+                        Navigator.pop(
+                          context,
+                        );
+                      },
+
+                      child:
+                          const SizedBox(
+                        width: 48,
+                        height: 48,
+
+                        child: Icon(
+                          Icons
+                              .arrow_back_rounded,
+                          color:
+                              Color(
+                            0xFF5422B8,
+                          ),
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ==================================================
+                // DECORATIVE DOTS
+                // ==================================================
+
+                Positioned(
+                  top: 32,
+                  right: 30,
+
+                  child: Column(
                     children: [
-                      const SizedBox(width: 32),
-                      _dot(),
-                      const SizedBox(width: 8),
-                      _dot(),
+                      Row(
+                        children: [
+                          _dot(),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          _dot(),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          _dot(),
+                        ],
+                      ),
+
+                      const SizedBox(
+                        height: 8,
+                      ),
+
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 32,
+                          ),
+                          _dot(),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          _dot(),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
-            ),
-
-            // ========================================================
-            // MAIN CONTENT
-            // ========================================================
-
-            Center(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal:
-                      isSmallScreen ? 20 : 40,
-                  vertical: 30,
                 ),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 920,
+
+                // ==================================================
+                // MAIN CONTENT
+                // ==================================================
+
+                Center(
+                  child:
+                      SingleChildScrollView(
+                    padding:
+                        const EdgeInsets
+                            .fromLTRB(
+                      16,
+                      18,
+                      16,
+                      20,
+                    ),
+
+                    child:
+                        ConstrainedBox(
+                      constraints:
+                          const BoxConstraints(
+                        maxWidth: 430,
+                      ),
+
+                      child:
+                          _buildMobileLayout(),
+                    ),
                   ),
-                  child: isSmallScreen
-                      ? _buildMobileLayout()
-                      : _buildDesktopLayout(),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  // ================================================================
-  // DESKTOP
-  // ================================================================
-
-  Widget _buildDesktopLayout() {
-    return Container(
-      margin: const EdgeInsets.only(top: 60),
-      padding: const EdgeInsets.all(42),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(34),
-        border: Border.all(
-          color: const Color(0xFFE3D7F8),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: _purple.withOpacity(0.16),
-            blurRadius: 40,
-            offset: const Offset(0, 18),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 6,
-            child: _buildForm(),
-          ),
-          const SizedBox(width: 50),
-          Expanded(
-            flex: 4,
-            child: _buildIllustration(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ================================================================
-  // MOBILE
-  // ================================================================
+  // ============================================================
+  // MOBILE LAYOUT
+  // ============================================================
 
   Widget _buildMobileLayout() {
     return Container(
-      margin: const EdgeInsets.only(top: 90),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
+      margin:
+          const EdgeInsets.only(
+        top: 50,
+      ),
+
+      padding:
+          const EdgeInsets.fromLTRB(
+        18,
+        12,
+        18,
+        18,
+      ),
+
+      decoration:
+          BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: const Color(0xFFE3D7F8),
+
+        borderRadius:
+            BorderRadius.circular(
+          30,
         ),
+
+        border: Border.all(
+          color:
+              const Color(
+            0xFFE3D7F8,
+          ),
+        ),
+
         boxShadow: [
           BoxShadow(
-            color: _purple.withOpacity(0.15),
+            color:
+                _purple.withOpacity(
+              0.15,
+            ),
             blurRadius: 30,
-            offset: const Offset(0, 15),
+            offset:
+                const Offset(
+              0,
+              15,
+            ),
           ),
         ],
       ),
+
       child: Column(
         children: [
+
+          // Smaller illustration
           _buildIllustration(),
-          const SizedBox(height: 25),
+
+          const SizedBox(
+            height: 2,
+          ),
+
           _buildForm(),
         ],
       ),
     );
   }
 
-  // ================================================================
+  // ============================================================
   // FORM
-  // ================================================================
+  // ============================================================
 
   Widget _buildForm() {
     return Form(
       key: _formKey,
+
       child: Column(
         crossAxisAlignment:
             CrossAxisAlignment.start,
+
         children: [
+
           // ========================================================
           // LABEL
           // ========================================================
 
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
+            padding:
+                const EdgeInsets
+                    .symmetric(
+              horizontal: 11,
+              vertical: 5,
             ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0E9FF),
+
+            decoration:
+                BoxDecoration(
+              color:
+                  const Color(
+                0xFFF0E9FF,
+              ),
               borderRadius:
-                  BorderRadius.circular(30),
+                  BorderRadius.circular(
+                30,
+              ),
             ),
+
             child: const Text(
               'GET STARTED',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.2,
+              style:
+                  TextStyle(
+                fontSize: 10,
+                fontWeight:
+                    FontWeight.w800,
+                letterSpacing: 1.1,
                 color: _purple,
               ),
             ),
           ),
 
-          const SizedBox(height: 15),
+          const SizedBox(
+            height: 10,
+          ),
 
           // ========================================================
           // HEADING
           // ========================================================
 
           const Text(
-            'Create Your Account',
-            style: TextStyle(
-              fontSize: 34,
-              fontWeight: FontWeight.w800,
+            'Create Account',
+            style:
+                TextStyle(
+              fontSize: 27,
+              fontWeight:
+                  FontWeight.w800,
               color: _darkText,
-              height: 1.15,
+              height: 1.1,
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(
+            height: 6,
+          ),
 
           const Text(
-            'Create your MediMate account and start managing your daily health needs.',
-            style: TextStyle(
-              fontSize: 15,
-              height: 1.5,
+            'Join MediMate and take control of your health',
+            style:
+                TextStyle(
+              fontSize: 13.5,
+              height: 1.35,
               color: _mediumText,
             ),
           ),
 
-          const SizedBox(height: 27),
+          const SizedBox(
+            height: 17,
+          ),
 
           // ========================================================
           // FULL NAME
@@ -460,39 +637,60 @@ class _SignupScreenState extends State<SignupScreen> {
 
           const Text(
             'Full Name',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF34264B),
+            style:
+                TextStyle(
+              fontSize: 13,
+              fontWeight:
+                  FontWeight.w700,
+              color:
+                  Color(0xFF34264B),
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(
+            height: 5,
+          ),
 
           TextFormField(
-            controller: _fullNameController,
+            controller:
+                _fullNameController,
+
             textCapitalization:
                 TextCapitalization.words,
+
             textInputAction:
                 TextInputAction.next,
-            style: const TextStyle(
+
+            style:
+                const TextStyle(
               color: _darkText,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+              fontSize: 13.5,
+              fontWeight:
+                  FontWeight.w600,
             ),
-            cursorColor: _purple,
-            decoration: _inputDecoration(
-              hint: 'Enter your full name',
+
+            cursorColor:
+                _purple,
+
+            decoration:
+                _inputDecoration(
+              hint:
+                  'Enter your full name',
               icon:
-                  Icons.person_outline_rounded,
+                  Icons
+                      .person_outline_rounded,
             ),
+
             validator: (value) {
               if (value == null ||
                   value.trim().isEmpty) {
                 return 'Please enter your full name';
               }
 
-              if (value.trim().length < 2) {
+              if (value
+                      .trim()
+                      .length <
+                  2) {
                 return 'Name must be at least 2 characters';
               }
 
@@ -500,39 +698,60 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
 
-          const SizedBox(height: 17),
+          const SizedBox(
+            height: 11,
+          ),
 
           // ========================================================
           // EMAIL
           // ========================================================
 
           const Text(
-            'Email Address',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF34264B),
+            'Email',
+            style:
+                TextStyle(
+              fontSize: 13,
+              fontWeight:
+                  FontWeight.w700,
+              color:
+                  Color(0xFF34264B),
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(
+            height: 5,
+          ),
 
           TextFormField(
-            controller: _emailController,
+            controller:
+                _emailController,
+
             keyboardType:
-                TextInputType.emailAddress,
+                TextInputType
+                    .emailAddress,
+
             textInputAction:
                 TextInputAction.next,
-            style: const TextStyle(
+
+            style:
+                const TextStyle(
               color: _darkText,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+              fontSize: 13.5,
+              fontWeight:
+                  FontWeight.w600,
             ),
-            cursorColor: _purple,
-            decoration: _inputDecoration(
-              hint: 'Enter your email address',
-              icon: Icons.email_outlined,
+
+            cursorColor:
+                _purple,
+
+            decoration:
+                _inputDecoration(
+              hint:
+                  'Enter your email',
+              icon:
+                  Icons.email_outlined,
             ),
+
             validator: (value) {
               if (value == null ||
                   value.trim().isEmpty) {
@@ -548,7 +767,9 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
 
-          const SizedBox(height: 17),
+          const SizedBox(
+            height: 11,
+          ),
 
           // ========================================================
           // PASSWORD
@@ -556,46 +777,74 @@ class _SignupScreenState extends State<SignupScreen> {
 
           const Text(
             'Password',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF34264B),
+            style:
+                TextStyle(
+              fontSize: 13,
+              fontWeight:
+                  FontWeight.w700,
+              color:
+                  Color(0xFF34264B),
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(
+            height: 5,
+          ),
 
           TextFormField(
-            controller: _passwordController,
-            obscureText: _obscurePassword,
+            controller:
+                _passwordController,
+
+            obscureText:
+                _obscurePassword,
+
             textInputAction:
                 TextInputAction.next,
-            style: const TextStyle(
+
+            style:
+                const TextStyle(
               color: _darkText,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+              fontSize: 13.5,
+              fontWeight:
+                  FontWeight.w600,
             ),
-            cursorColor: _purple,
-            decoration: _inputDecoration(
-              hint: 'Enter your password',
+
+            cursorColor:
+                _purple,
+
+            decoration:
+                _inputDecoration(
+              hint:
+                  'Enter your password',
               icon:
-                  Icons.lock_outline_rounded,
-              suffixIcon: IconButton(
+                  Icons
+                      .lock_outline_rounded,
+
+              suffixIcon:
+                  IconButton(
                 onPressed: () {
                   setState(() {
                     _obscurePassword =
                         !_obscurePassword;
                   });
                 },
-                icon: Icon(
+
+                icon:
+                    Icon(
                   _obscurePassword
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
+                      ? Icons
+                          .visibility_outlined
+                      : Icons
+                          .visibility_off_outlined,
                   color:
-                      const Color(0xFF8B829B),
+                      const Color(
+                    0xFF8B829B,
+                  ),
+                  size: 20,
                 ),
               ),
             ),
+
             validator: (value) {
               if (value == null ||
                   value.isEmpty) {
@@ -616,7 +865,9 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
 
-          const SizedBox(height: 17),
+          const SizedBox(
+            height: 11,
+          ),
 
           // ========================================================
           // CONFIRM PASSWORD
@@ -624,48 +875,74 @@ class _SignupScreenState extends State<SignupScreen> {
 
           const Text(
             'Confirm Password',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF34264B),
+            style:
+                TextStyle(
+              fontSize: 13,
+              fontWeight:
+                  FontWeight.w700,
+              color:
+                  Color(0xFF34264B),
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(
+            height: 5,
+          ),
 
           TextFormField(
             controller:
                 _confirmPasswordController,
+
             obscureText:
                 _obscureConfirmPassword,
+
             textInputAction:
                 TextInputAction.done,
-            style: const TextStyle(
+
+            style:
+                const TextStyle(
               color: _darkText,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+              fontSize: 13.5,
+              fontWeight:
+                  FontWeight.w600,
             ),
-            cursorColor: _purple,
-            decoration: _inputDecoration(
-              hint: 'Confirm your password',
+
+            cursorColor:
+                _purple,
+
+            decoration:
+                _inputDecoration(
+              hint:
+                  'Confirm your password',
               icon:
-                  Icons.lock_outline_rounded,
-              suffixIcon: IconButton(
+                  Icons
+                      .lock_outline_rounded,
+
+              suffixIcon:
+                  IconButton(
                 onPressed: () {
                   setState(() {
                     _obscureConfirmPassword =
                         !_obscureConfirmPassword;
                   });
                 },
-                icon: Icon(
+
+                icon:
+                    Icon(
                   _obscureConfirmPassword
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
+                      ? Icons
+                          .visibility_outlined
+                      : Icons
+                          .visibility_off_outlined,
                   color:
-                      const Color(0xFF8B829B),
+                      const Color(
+                    0xFF8B829B,
+                  ),
+                  size: 20,
                 ),
               ),
             ),
+
             validator: (value) {
               if (value == null ||
                   value.isEmpty) {
@@ -681,64 +958,116 @@ class _SignupScreenState extends State<SignupScreen> {
             },
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(
+            height: 11,
+          ),
 
           // ========================================================
-          // PASSWORD INFO
+          // PASSWORD REQUIREMENTS
           // ========================================================
 
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF1EAFF),
+            width:
+                double.infinity,
+
+            padding:
+                const EdgeInsets
+                    .symmetric(
+              horizontal: 11,
+              vertical: 9,
+            ),
+
+            decoration:
+                BoxDecoration(
+              color:
+                  const Color(
+                0xFFF1EAFF,
+              ),
               borderRadius:
-                  BorderRadius.circular(17),
+                  BorderRadius.circular(
+                13,
+              ),
               border: Border.all(
-                color: const Color(0xFFE0D3F7),
+                color:
+                    const Color(
+                  0xFFE0D3F7,
+                ),
               ),
             ),
+
             child: Row(
               crossAxisAlignment:
-                  CrossAxisAlignment.start,
+                  CrossAxisAlignment
+                      .start,
+
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
+                  width: 30,
+                  height: 30,
+
+                  decoration:
+                      BoxDecoration(
                     color:
-                        const Color(0xFFE1D3FF),
+                        const Color(
+                      0xFFE1D3FF,
+                    ),
                     borderRadius:
-                        BorderRadius.circular(12),
+                        BorderRadius
+                            .circular(
+                      9,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.shield_outlined,
-                    color: _purple,
-                    size: 22,
+
+                  child:
+                      const Icon(
+                    Icons
+                        .shield_outlined,
+                    color:
+                        _purple,
+                    size: 17,
                   ),
                 ),
-                const SizedBox(width: 13),
+
+                const SizedBox(
+                  width: 9,
+                ),
+
                 const Expanded(
                   child: Column(
                     crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        CrossAxisAlignment
+                            .start,
+
                     children: [
                       Text(
                         'Password requirements',
-                        style: TextStyle(
-                          fontSize: 14,
+                        style:
+                            TextStyle(
+                          fontSize:
+                              11,
                           fontWeight:
-                              FontWeight.w800,
+                              FontWeight
+                                  .w800,
                           color:
-                              Color(0xFF34264B),
+                              Color(
+                            0xFF34264B,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 7),
+
+                      SizedBox(
+                        height: 4,
+                      ),
+
                       _Requirement(
                         text:
                             'At least 8 characters',
                       ),
-                      SizedBox(height: 4),
+
+                      SizedBox(
+                        height: 2,
+                      ),
+
                       _Requirement(
                         text:
                             'Contains letters and numbers',
@@ -750,7 +1079,9 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(
+            height: 9,
+          ),
 
           // ========================================================
           // TERMS
@@ -763,43 +1094,80 @@ class _SignupScreenState extends State<SignupScreen> {
                     !_agreedToTerms;
               });
             },
+
             child: Row(
               crossAxisAlignment:
-                  CrossAxisAlignment.start,
+                  CrossAxisAlignment
+                      .start,
+
               children: [
                 Checkbox(
-                  value: _agreedToTerms,
-                  activeColor: _purple,
-                  checkColor: Colors.white,
-                  side: const BorderSide(
-                    color: Color(0xFF9B93A8),
+                  value:
+                      _agreedToTerms,
+
+                  activeColor:
+                      _purple,
+
+                  checkColor:
+                      Colors.white,
+
+                  side:
+                      const BorderSide(
+                    color:
+                        Color(
+                      0xFF9B93A8,
+                    ),
                     width: 1.5,
                   ),
+
                   shape:
                       RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.circular(5),
+                        BorderRadius
+                            .circular(
+                      5,
+                    ),
                   ),
+
+                  materialTapTargetSize:
+                      MaterialTapTargetSize
+                          .shrinkWrap,
+
+                  visualDensity:
+                      VisualDensity
+                          .compact,
+
                   onChanged: (value) {
                     setState(() {
                       _agreedToTerms =
-                          value ?? false;
+                          value ??
+                              false;
                     });
                   },
                 ),
-                const SizedBox(width: 4),
+
+                const SizedBox(
+                  width: 3,
+                ),
+
                 const Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 12,
+                    padding:
+                        EdgeInsets.only(
+                      top: 7,
                     ),
+
                     child: Text(
                       'I agree to the Terms of Service '
                       'and Privacy Policy',
-                      style: TextStyle(
-                        color: _mediumText,
-                        fontSize: 13,
-                        height: 1.4,
+
+                      style:
+                          TextStyle(
+                        color:
+                            _mediumText,
+                        fontSize:
+                            11.5,
+                        height: 1.3,
                       ),
                     ),
                   ),
@@ -808,10 +1176,12 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(
+            height: 7,
+          ),
 
           // ========================================================
-          // CREATE ACCOUNT BUTTON
+          // CREATE ACCOUNT
           // ========================================================
 
           _buildCreateAccountButton(),
@@ -820,9 +1190,9 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  // ================================================================
+  // ============================================================
   // INPUT DECORATION
-  // ================================================================
+  // ============================================================
 
   InputDecoration _inputDecoration({
     required String hint,
@@ -831,127 +1201,205 @@ class _SignupScreenState extends State<SignupScreen> {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(
-        color: Color(0xFFAAA2B7),
-        fontSize: 14,
+
+      hintStyle:
+          const TextStyle(
+        color:
+            Color(0xFFAAA2B7),
+        fontSize: 12.5,
       ),
-      prefixIcon: Icon(
+
+      prefixIcon:
+          Icon(
         icon,
         color: _purple,
+        size: 20,
       ),
-      suffixIcon: suffixIcon,
+
+      suffixIcon:
+          suffixIcon,
+
       filled: true,
-      fillColor: _fieldBackground,
+
+      fillColor:
+          _fieldBackground,
+
       contentPadding:
-          const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 18,
+          const EdgeInsets
+              .symmetric(
+        horizontal: 14,
+        vertical: 13,
       ),
-      enabledBorder: OutlineInputBorder(
+
+      enabledBorder:
+          OutlineInputBorder(
         borderRadius:
-            BorderRadius.circular(16),
-        borderSide: const BorderSide(
-          color: Color(0xFFDCCEF4),
-          width: 1.3,
+            BorderRadius.circular(
+          14,
         ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius:
-            BorderRadius.circular(16),
-        borderSide: const BorderSide(
-          color: _purple,
-          width: 2,
-        ),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius:
-            BorderRadius.circular(16),
-        borderSide: const BorderSide(
-          color: Color(0xFFDC2626),
+
+        borderSide:
+            const BorderSide(
+          color:
+              Color(0xFFDCCEF4),
           width: 1.2,
         ),
       ),
+
+      focusedBorder:
+          OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(
+          14,
+        ),
+
+        borderSide:
+            const BorderSide(
+          color: _purple,
+          width: 1.7,
+        ),
+      ),
+
+      errorBorder:
+          OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(
+          14,
+        ),
+
+        borderSide:
+            const BorderSide(
+          color:
+              Color(0xFFDC2626),
+          width: 1.2,
+        ),
+      ),
+
       focusedErrorBorder:
           OutlineInputBorder(
         borderRadius:
-            BorderRadius.circular(16),
-        borderSide: const BorderSide(
-          color: Color(0xFFDC2626),
+            BorderRadius.circular(
+          14,
+        ),
+
+        borderSide:
+            const BorderSide(
+          color:
+              Color(0xFFDC2626),
           width: 1.5,
         ),
       ),
     );
   }
 
-  // ================================================================
+  // ============================================================
   // CREATE ACCOUNT BUTTON
-  // ================================================================
+  // ============================================================
 
   Widget _buildCreateAccountButton() {
     final disabled =
-        _isLoading || !_agreedToTerms;
+        _isLoading ||
+        !_agreedToTerms;
 
     return SizedBox(
-      width: double.infinity,
-      height: 58,
+      width:
+          double.infinity,
+
+      height: 50,
+
       child: DecoratedBox(
-        decoration: BoxDecoration(
+        decoration:
+            BoxDecoration(
           gradient: disabled
               ? const LinearGradient(
                   colors: [
-                    Color(0xFFB9A8D8),
-                    Color(0xFF9D8BC1),
+                    Color(
+                      0xFFB9A8D8,
+                    ),
+                    Color(
+                      0xFF9D8BC1,
+                    ),
                   ],
                 )
               : const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+                  begin:
+                      Alignment
+                          .centerLeft,
+                  end:
+                      Alignment
+                          .centerRight,
                   colors: [
                     _lightPurple,
                     _purple,
                   ],
                 ),
+
           borderRadius:
-              BorderRadius.circular(17),
+              BorderRadius.circular(
+            14,
+          ),
+
           boxShadow: disabled
               ? []
               : [
                   BoxShadow(
-                    color:
-                        _purple.withOpacity(0.28),
-                    blurRadius: 18,
-                    offset: const Offset(0, 9),
+                    color: _purple
+                        .withOpacity(
+                      0.25,
+                    ),
+                    blurRadius: 14,
+                    offset:
+                        const Offset(
+                      0,
+                      6,
+                    ),
                   ),
                 ],
         ),
-        child: ElevatedButton(
+
+        child:
+            ElevatedButton(
           onPressed: disabled
               ? null
               : _handleSignup,
-          style: ElevatedButton.styleFrom(
+
+          style:
+              ElevatedButton.styleFrom(
             backgroundColor:
                 Colors.transparent,
-            foregroundColor: Colors.white,
+
+            foregroundColor:
+                Colors.white,
+
             disabledBackgroundColor:
                 Colors.transparent,
+
             disabledForegroundColor:
                 Colors.white,
+
             shadowColor:
                 Colors.transparent,
+
             elevation: 0,
+
             shape:
                 RoundedRectangleBorder(
               borderRadius:
-                  BorderRadius.circular(17),
+                  BorderRadius.circular(
+                14,
+              ),
             ),
           ),
+
           child: _isLoading
               ? const SizedBox(
-                  width: 23,
-                  height: 23,
+                  width: 21,
+                  height: 21,
+
                   child:
                       CircularProgressIndicator(
-                    strokeWidth: 2.5,
+                    strokeWidth: 2.3,
+
                     valueColor:
                         AlwaysStoppedAnimation<
                             Color>(
@@ -959,22 +1407,33 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                 )
+
               : const Row(
                   mainAxisAlignment:
-                      MainAxisAlignment.center,
+                      MainAxisAlignment
+                          .center,
+
                   children: [
                     Text(
                       'Create Account',
-                      style: TextStyle(
-                        fontSize: 15,
+                      style:
+                          TextStyle(
+                        fontSize:
+                            14,
                         fontWeight:
-                            FontWeight.w800,
+                            FontWeight
+                                .w800,
                       ),
                     ),
-                    SizedBox(width: 10),
+
+                    SizedBox(
+                      width: 8,
+                    ),
+
                     Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 21,
+                      Icons
+                          .arrow_forward_rounded,
+                      size: 18,
                     ),
                   ],
                 ),
@@ -983,161 +1442,134 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  // ================================================================
+  // ============================================================
   // ILLUSTRATION
-  // ================================================================
+  // ============================================================
 
   Widget _buildIllustration() {
-    return Column(
-      children: [
-        Container(
-          width: 210,
-          height: 210,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF0E8FF),
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: const Color(0xFFE1D2FF),
-              width: 2,
-            ),
-          ),
-          child: Center(
+    return SizedBox(
+      width: 210,
+      height: 145,
+
+      child: Stack(
+        alignment:
+            Alignment.center,
+
+        children: [
+
+          // Heart
+          Positioned(
+            top: 2,
+            left: 3,
+
             child: Container(
-              width: 145,
-              height: 145,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+              width: 43,
+              height: 43,
+
+              decoration:
+                  const BoxDecoration(
+                color:
+                    Color(0xFFE9DDFF),
+                shape:
+                    BoxShape.circle,
               ),
-              child: Center(
-                child: Container(
-                  width: 82,
-                  height: 82,
-                  decoration: BoxDecoration(
-                    color:
-                        const Color(0xFFE9DDFF),
-                    borderRadius:
-                        BorderRadius.circular(24),
-                  ),
-                  child: const Icon(
-                    Icons.person_add_alt_1_rounded,
-                    color: _purple,
-                    size: 45,
-                  ),
+
+              child:
+                  const Icon(
+                Icons
+                    .favorite_rounded,
+                color:
+                    Color(
+                  0xFF8B5CF6,
                 ),
+                size: 21,
               ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 20),
+          // Plus
+          Positioned(
+            top: 25,
+            right: 0,
 
-        const Text(
-          'Welcome to MediMate',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 19,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF34264B),
+            child: Container(
+              width: 40,
+              height: 40,
+
+              decoration:
+                  const BoxDecoration(
+                color:
+                    Color(0xFFE1D2FF),
+                shape:
+                    BoxShape.circle,
+              ),
+
+              child:
+                  const Icon(
+                Icons.add_rounded,
+                color:
+                    Color(
+                  0xFF6D28D9,
+                ),
+                size: 23,
+              ),
+            ),
           ),
-        ),
 
-        const SizedBox(height: 8),
+          // Doctor
+          Image.asset(
+            'assets/images/home_doctor.png',
 
-        const Text(
-          'Keep your medicines, reminders and\ndaily health routine organized.',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 13,
-            height: 1.5,
-            color: Color(0xFF81778F),
+            width: 185,
+            height: 150,
+
+            fit:
+                BoxFit.contain,
+
+            errorBuilder:
+                (_, __, ___) {
+              return const Icon(
+                Icons
+                    .medical_services_rounded,
+                color:
+                    Color(
+                  0xFF6D28D9,
+                ),
+                size: 65,
+              );
+            },
           ),
-        ),
-
-        const SizedBox(height: 20),
-
-        Row(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
-          children: [
-            _featureIcon(
-              Icons.medication_outlined,
-              'Medicines',
-            ),
-            const SizedBox(width: 12),
-            _featureIcon(
-              Icons.notifications_none_rounded,
-              'Reminders',
-            ),
-            const SizedBox(width: 12),
-            _featureIcon(
-              Icons.water_drop_outlined,
-              'Hydration',
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  // ================================================================
-  // FEATURE ICON
-  // ================================================================
-
-  Widget _featureIcon(
-    IconData icon,
-    String label,
-  ) {
-    return Column(
-      children: [
-        Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF1EAFF),
-            borderRadius:
-                BorderRadius.circular(13),
-          ),
-          child: Icon(
-            icon,
-            color: _purple,
-            size: 21,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF81778F),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ================================================================
+  // ============================================================
   // DECORATIVE DOT
-  // ================================================================
+  // ============================================================
 
   Widget _dot() {
     return Container(
       width: 7,
       height: 7,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
+
+      decoration:
+          const BoxDecoration(
+        color:
+            Colors.white,
+        shape:
+            BoxShape.circle,
       ),
     );
   }
 }
 
-// ================================================================
+// ============================================================
 // PASSWORD REQUIREMENT
-// ================================================================
+// ============================================================
 
-class _Requirement extends StatelessWidget {
+class _Requirement
+    extends StatelessWidget {
   final String text;
 
   const _Requirement({
@@ -1145,21 +1577,34 @@ class _Requirement extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Row(
       children: [
         const Icon(
-          Icons.check_circle_rounded,
-          color: Color(0xFF7C3AED),
-          size: 16,
+          Icons
+              .check_circle_rounded,
+          color:
+              Color(0xFF7C3AED),
+          size: 13,
         ),
-        const SizedBox(width: 7),
+
+        const SizedBox(
+          width: 5,
+        ),
+
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF71677F),
+
+            style:
+                const TextStyle(
+              fontSize: 9.5,
+              color:
+                  Color(
+                0xFF71677F,
+              ),
             ),
           ),
         ),
@@ -1168,15 +1613,18 @@ class _Requirement extends StatelessWidget {
   }
 }
 
-// ================================================================
+// ============================================================
 // CURVED HEADER
-// ================================================================
+// ============================================================
 
 class _HeaderClipper
     extends CustomClipper<Path> {
   @override
-  Path getClip(Size size) {
-    final path = Path();
+  Path getClip(
+    Size size,
+  ) {
+    final path =
+        Path();
 
     path.lineTo(
       0,
@@ -1209,7 +1657,8 @@ class _HeaderClipper
 
   @override
   bool shouldReclip(
-    CustomClipper<Path> oldClipper,
+    CustomClipper<Path>
+        oldClipper,
   ) {
     return false;
   }
