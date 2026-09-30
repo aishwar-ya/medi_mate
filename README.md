@@ -274,7 +274,6 @@ medication/
 │       └── stock_medicine.png
 │
 ├── lib/
-│   │
 │   ├── screens/
 │   │   ├── add_medication_screen.dart
 │   │   ├── barcode_scanner_screen_mobile.dart
@@ -302,6 +301,14 @@ medication/
 │   │   └── auth_widgets.dart
 │   │
 │   └── main.dart
+│
+├── screenshots/
+│   ├── 01_home.png
+│   ├── 02_hydration.png
+│   ├── 03_stock.png
+│   ├── 04_settings.png
+│   ├── 05_add_medication.png
+│   └── 06_voice_reminder.png
 │
 ├── pubspec.yaml
 ├── pubspec.lock
@@ -335,7 +342,7 @@ flutter doctor
 **1️⃣ Clone the repository**
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/aishwar-ya/medi_mate.git
 ```
 
 **2️⃣ Open the project**
@@ -421,7 +428,7 @@ Some features need device permissions to work properly.
 
 ## 🎯 Purpose of the Project
 
-MediMate was developed as an **MCA Mini Project** to demonstrate the use of **Flutter and Dart** in building a practical mobile application. It focuses on combining multiple medication-related features into a single app with a simple and user-friendly interface.
+MediMate was developed as an **MCA Mini Project** to demonstrate the use of **Flutter and Dart** in building a practical medication management application. It focuses on combining multiple medication-related features into a single app with a simple and user-friendly interface.
 
 ---
 
@@ -431,7 +438,7 @@ MediMate was developed as an **MCA Mini Project** to demonstrate the use of **Fl
 
 **Aiswarya**
 
-🎓 Master of Computer Applications (MCA)
+🎓 Master of Computer Applications (MCA)  
 📚 MCA Mini Project
 
 </div>
