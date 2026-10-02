@@ -29,11 +29,13 @@ dependencies:
   mobile_scanner: ^7.4.2
   firebase_messaging: ^15.2.10
   firebase_core: ^3.4.0
+  flutter_native_splash: ^2.4.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
@@ -46,3 +48,8 @@ flutter:
     - assets/images/hydration_bottle.png
     - assets/images/stock_medicine.png
     - assets/images/notification_bell.png
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/medimate_app_icon.png"

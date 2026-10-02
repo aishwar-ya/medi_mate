@@ -38,6 +38,8 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   List<Medication> _medicationsList = [];
 
+  String _profileName = 'MediMate User';
+
   static const Color purple = Color(0xFF7C3AED);
 
   static const Color purpleDark = Color(0xFF5B21B6);
@@ -54,11 +56,109 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   static const Color danger = Color(0xFFDC2626);
 
+  Future<void> _loadProfileName() async {
+
+  try {
+
+    final user = supabase.auth.currentUser;
+
+    if (user == null) return;
+
+    final data = await supabase
+
+        .from('profiles')
+
+        .select('full_name')
+
+        .eq('id', user.id)
+
+        .maybeSingle();
+
+    String name = (data?['full_name'] as String?)?.trim() ?? '';
+
+    if (name.isEmpty) {
+
+      final metadata = user.userMetadata ?? <String, dynamic>{};
+
+      name = (metadata['full_name'] ?? metadata['name'] ?? '')
+
+          .toString()
+
+          .trim();
+
+    }
+
+    if (name.isEmpty && (user.email ?? '').contains('@')) {
+
+      name = user.email!.split('@').first.trim();
+
+    }
+
+    if (name.isEmpty) {
+
+      name = 'MediMate User';
+
+    }
+
+    if (mounted) {
+
+      setState(() {
+
+        _profileName = name;
+
+      });
+
+    }
+
+  } catch (e) {
+
+    logger.w('Could not load profile name: $e');
+
+  }
+
+}
+
+String _getGreeting() {
+
+  // Indian Standard Time (UTC +05:30)
+
+  final istNow = DateTime.now()
+
+      .toUtc()
+
+      .add(const Duration(hours: 5, minutes: 30));
+
+  final hour = istNow.hour;
+
+  if (hour >= 5 && hour < 12) {
+
+    return 'Good morning';
+
+  }
+
+  if (hour >= 12 && hour < 17) {
+
+    return 'Good afternoon';
+
+  }
+
+  if (hour >= 17 && hour < 21) {
+
+    return 'Good evening';
+
+  }
+
+  return 'Good night';
+
+}
+
   @override
 
   void initState() {
 
     super.initState();
+
+    _loadProfileName();
 
     _initializeFCM();
 
@@ -453,17 +553,29 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
         if (userId != null) {
 
           await supabase
+
               .from('scheduled_notifications')
+
               .upsert(
+
                 {
+
                   'user_id': userId,
+
                   'medication_id': medicationId,
+
                   'medication_name': medicationName,
+
                   'scheduled_time': timeStr,
+
                   'fcm_token': _fcmToken,
+
                   'updated_at': DateTime.now().toIso8601String(),
+
                 },
+
                 onConflict: 'user_id,medication_id',
+
               );
 
           logger.i(
@@ -1798,15 +1910,11 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
           ),
 
-          const Positioned(
-
+          Positioned(
             left: 12,
-
             top: 46,
-
             child: Text(
-
-              'Good morning,',
+              '${_getGreeting()},',
 
               style: TextStyle(
 
@@ -1824,15 +1932,11 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
           ),
 
-          const Positioned(
-
+          Positioned(
             left: 12,
-
             top: 62,
-
             child: Text(
-
-              'Aiswarya 👋',
+              '$_profileName 👋',
 
               style: TextStyle(
 

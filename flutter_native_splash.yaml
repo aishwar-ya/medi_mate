@@ -1,0 +1,12 @@
+flutter_native_splash:
+  color: "#F8F6FF"
+  image: assets/images/medimate_splash.png
+  android: true
+  ios: true
+  web: false
+  fullscreen: false
+
+  android_12:
+    color: "#F8F6FF"
+    image: assets/images/medimate_splash.png
+    icon_background_color: "#F8F6FF"

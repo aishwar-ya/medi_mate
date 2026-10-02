@@ -38,6 +38,8 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   List<Medication> _medicationsList = [];
 
+  String _profileName = 'MediMate User';
+
   @override
 
   void initState() {
@@ -45,6 +47,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
     super.initState();
 
     _initializeFCM();
+    _loadProfileName();
 
     _medicationsFuture = _fetchMedications().then((meds) {
 
@@ -1246,6 +1249,49 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   }
 
+  Future<void> _loadProfileName() async {
+    try {
+      final user = supabase.auth.currentUser;
+      if (user == null) return;
+
+      final data = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .maybeSingle();
+
+      String name = (data?['full_name'] as String?)?.trim() ?? '';
+
+      if (name.isEmpty) {
+        final metadata = user.userMetadata ?? <String, dynamic>{};
+        name = (metadata['full_name'] ?? metadata['name'] ?? '').toString().trim();
+      }
+
+      if (name.isEmpty && (user.email ?? '').contains('@')) {
+        name = user.email!.split('@').first.trim();
+      }
+
+      if (name.isEmpty) name = 'MediMate User';
+
+      if (mounted) {
+        setState(() => _profileName = name);
+      }
+    } catch (e) {
+      logger.w('Could not load profile name: $e');
+    }
+  }
+
+  String _getGreeting() {
+    // Always use Indian Standard Time (UTC+05:30).
+    final istNow = DateTime.now().toUtc().add(const Duration(hours: 5, minutes: 30));
+    final hour = istNow.hour;
+
+    if (hour >= 5 && hour < 12) return 'Good morning';
+    if (hour >= 12 && hour < 17) return 'Good afternoon';
+    if (hour >= 17 && hour < 21) return 'Good evening';
+    return 'Good night';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -1254,8 +1300,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
       0,
       (total, med) => total + (med.reminderTimes?.length ?? 0),
     );
-    final hour = DateTime.now().hour;
-    final greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    final greeting = _getGreeting();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F3FF),
@@ -1421,7 +1466,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                     const SizedBox(height: 22),
                     Text(greeting + ',', style: const TextStyle(color: Color(0xFF514665), fontSize: 15, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 2),
-                    const Text('Aiswarya 👋', style: TextStyle(color: Color(0xFF211738), fontSize: 27, fontWeight: FontWeight.w900)),
+                    Text('$_profileName 👋', style: const TextStyle(color: Color(0xFF211738), fontSize: 27, fontWeight: FontWeight.w900)),
                     const SizedBox(height: 5),
                     const Text('Take care of your health today.', style: TextStyle(color: Color(0xFF6F6382), fontSize: 13, fontWeight: FontWeight.w500)),
                   ],

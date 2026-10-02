@@ -778,7 +778,7 @@ class _ReminderSettingsScreenState extends State<ReminderSettingsScreen> {
                   ),
                 ),
                 const Text(
-                  'Notifications',
+                  'Settings',
                   style: TextStyle(
                     color: textDark,
                     fontSize: 17,
@@ -793,7 +793,7 @@ class _ReminderSettingsScreenState extends State<ReminderSettingsScreen> {
             left: 2,
             top: 22,
             child: Text(
-              'Manage your medication and hydration reminders',
+              'Manage your MediMate preferences',
               style: TextStyle(
                 color: textMuted,
                 fontSize: 7.5,

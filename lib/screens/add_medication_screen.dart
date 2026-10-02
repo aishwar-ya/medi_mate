@@ -4,18 +4,13 @@ import 'package:barcode_widget/barcode_widget.dart';
 class AddMedicationScreen extends StatefulWidget {
   final Map<String, dynamic>? initialData;
 
-  const AddMedicationScreen({
-    super.key,
-    this.initialData,
-  });
+  const AddMedicationScreen({super.key, this.initialData});
 
   @override
-  State<AddMedicationScreen> createState() =>
-      _AddMedicationScreenState();
+  State<AddMedicationScreen> createState() => _AddMedicationScreenState();
 }
 
-class _AddMedicationScreenState
-    extends State<AddMedicationScreen> {
+class _AddMedicationScreenState extends State<AddMedicationScreen> {
   dynamic _medicationId;
 
   final _nameController = TextEditingController();
@@ -27,11 +22,7 @@ class _AddMedicationScreenState
 
   List<String> _selectedTimes = ['8:00 AM'];
 
-  final List<String> _frequencies = [
-    'Once daily',
-    'Twice daily',
-    'As needed',
-  ];
+  final List<String> _frequencies = ['Once daily', 'Twice daily', 'As needed'];
 
   static const Color purple = Color(0xFF7C3AED);
   static const Color purpleDark = Color(0xFF5B21B6);
@@ -50,41 +41,29 @@ class _AddMedicationScreenState
 
       _medicationId = init['id'];
 
-      _nameController.text =
-          init['name']?.toString() ?? '';
+      _nameController.text = init['name']?.toString() ?? '';
 
-      _dosageController.text =
-          init['dosage']?.toString() ?? '';
+      _dosageController.text = init['dosage']?.toString() ?? '';
 
-      _stockController.text =
-          init['stock_quantity']?.toString() ?? '30';
+      _stockController.text = init['stock_quantity']?.toString() ?? '30';
 
-      _selectedFrequency =
-          init['frequency']?.toString() ??
-              'Once daily';
+      _selectedFrequency = init['frequency']?.toString() ?? 'Once daily';
 
       if (!_frequencies.contains(_selectedFrequency)) {
         _selectedFrequency = 'Once daily';
       }
 
-      if (init['barcode'] != null &&
-          init['barcode'].toString().isNotEmpty) {
-        _barcodeController.text =
-            init['barcode'].toString();
+      if (init['barcode'] != null && init['barcode'].toString().isNotEmpty) {
+        _barcodeController.text = init['barcode'].toString();
       } else if (_medicationId != null) {
-        final idString =
-            _medicationId.toString().padLeft(3, '0');
+        final idString = _medicationId.toString().padLeft(3, '0');
 
-        _barcodeController.text =
-            'MEDIC$idString';
+        _barcodeController.text = 'MEDIC$idString';
       }
 
       if (init['reminder_times'] != null) {
         try {
-          _selectedTimes =
-              List<String>.from(
-            init['reminder_times'],
-          );
+          _selectedTimes = List<String>.from(init['reminder_times']);
         } catch (_) {
           _selectedTimes = ['8:00 AM'];
         }
@@ -139,31 +118,25 @@ class _AddMedicationScreenState
         hour = 0;
       }
 
-      return TimeOfDay(
-        hour: hour,
-        minute: minute,
-      );
+      return TimeOfDay(hour: hour, minute: minute);
     } catch (_) {
       return TimeOfDay.now();
     }
   }
 
   Future<void> _pickTime(int index) async {
-    if (index < 0 ||
-        index >= _selectedTimes.length) {
+    if (index < 0 || index >= _selectedTimes.length) {
       return;
     }
 
     final picked = await showTimePicker(
       context: context,
-      initialTime:
-          _parseTimeOfDay(_selectedTimes[index]),
+      initialTime: _parseTimeOfDay(_selectedTimes[index]),
     );
 
     if (picked != null && mounted) {
       setState(() {
-        _selectedTimes[index] =
-            picked.format(context);
+        _selectedTimes[index] = picked.format(context);
       });
 
       debugPrint(
@@ -179,24 +152,15 @@ class _AddMedicationScreenState
 
       if (value == 'Once daily') {
         _selectedTimes = [
-          _selectedTimes.isNotEmpty
-              ? _selectedTimes.first
-              : '8:00 AM',
+          _selectedTimes.isNotEmpty ? _selectedTimes.first : '8:00 AM',
         ];
       } else if (value == 'Twice daily') {
         if (_selectedTimes.isEmpty) {
-          _selectedTimes = [
-            '8:00 AM',
-            '8:00 PM',
-          ];
+          _selectedTimes = ['8:00 AM', '8:00 PM'];
         } else if (_selectedTimes.length == 1) {
-          _selectedTimes = [
-            _selectedTimes.first,
-            '8:00 PM',
-          ];
+          _selectedTimes = [_selectedTimes.first, '8:00 PM'];
         } else if (_selectedTimes.length > 2) {
-          _selectedTimes =
-              _selectedTimes.take(2).toList();
+          _selectedTimes = _selectedTimes.take(2).toList();
         }
       } else {
         _selectedTimes = [];
@@ -211,11 +175,7 @@ class _AddMedicationScreenState
 
     if (_selectedTimes.length >= 2) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'You can add up to two reminder times.',
-          ),
-        ),
+        const SnackBar(content: Text('You can add up to two reminder times.')),
       );
       return;
     }
@@ -248,23 +208,15 @@ class _AddMedicationScreenState
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints:
-                const BoxConstraints(maxWidth: 430),
+            constraints: const BoxConstraints(maxWidth: 436),
             child: Column(
               children: [
                 _buildHeader(isEditing),
 
                 Expanded(
                   child: SingleChildScrollView(
-                    physics:
-                        const BouncingScrollPhysics(),
-                    padding:
-                        const EdgeInsets.fromLTRB(
-                      12,
-                      8,
-                      12,
-                      28,
-                    ),
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 28),
                     child: Column(
                       children: [
                         _buildMedicationDetailsCard(),
@@ -298,14 +250,11 @@ class _AddMedicationScreenState
 
   Widget _buildHeader(bool isEditing) {
     return Container(
-      height: 100,
+      height: 128,
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0xFFEFE7FF),
-            Color(0xFFDCD0FF),
-          ],
+          colors: [Color(0xFFEFE7FF), Color(0xFFDCD0FF)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -324,31 +273,29 @@ class _AddMedicationScreenState
               width: 95,
               height: 95,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.22),
+                color: Colors.white.withValues(alpha: 0.22),
                 shape: BoxShape.circle,
               ),
             ),
           ),
 
           Positioned(
-  right: 8,
-  bottom: -4,
-  child: Image.asset(
-    'assets/images/home_doctor.png',
-    width: 125,
-    height: 105,
-    fit: BoxFit.contain,
-    errorBuilder: (_, __, ___) =>
-        const SizedBox.shrink(),
-  ),
-),
+            right: 8,
+            bottom: -4,
+            child: Image.asset(
+              'assets/images/home_doctor.png',
+              width: 125,
+              height: 105,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
 
           Positioned(
             left: 10,
             top: 10,
             child: GestureDetector(
-              onTap: () =>
-                  Navigator.pop(context),
+              onTap: () => Navigator.pop(context),
               child: Container(
                 width: 32,
                 height: 32,
@@ -369,9 +316,7 @@ class _AddMedicationScreenState
             left: 52,
             top: 11,
             child: Text(
-              isEditing
-                  ? 'Edit Medication'
-                  : 'Add Medication',
+              isEditing ? 'Edit Medication' : 'Add Medication',
               style: const TextStyle(
                 color: textDark,
                 fontSize: 17,
@@ -387,26 +332,21 @@ class _AddMedicationScreenState
               isEditing
                   ? 'Update your medication details'
                   : 'Add a medicine to your medication list',
-              style: const TextStyle(
-                color: textMuted,
-                fontSize: 8.5,
-              ),
+              style: const TextStyle(color: textMuted, fontSize: 8.5),
             ),
           ),
 
           Positioned(
             left: 12,
-            bottom: 13,
+            bottom: 12,
             child: Row(
               children: [
                 Container(
                   width: 22,
                   height: 22,
                   decoration: BoxDecoration(
-                    color:
-                        Colors.white.withOpacity(0.9),
-                    borderRadius:
-                        BorderRadius.circular(7),
+                    color: Colors.white.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(7),
                   ),
                   child: const Icon(
                     Icons.medication_rounded,
@@ -431,26 +371,20 @@ class _AddMedicationScreenState
     );
   }
 
-  Widget _buildPillDecoration(
-    IconData icon,
-    double size,
-  ) {
+  Widget _buildPillDecoration(IconData icon, double size) {
     return Transform.rotate(
       angle: 0.15,
       child: Container(
         width: size,
         height: size * 0.65,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.68),
-          borderRadius:
-              BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.5),
-          ),
+          color: Colors.white.withValues(alpha: 0.68),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
         ),
         child: Icon(
           icon,
-          color: purple.withOpacity(0.7),
+          color: purple.withValues(alpha: 0.7),
           size: size * 0.34,
         ),
       ),
@@ -465,8 +399,7 @@ class _AddMedicationScreenState
     return _buildSectionCard(
       icon: Icons.medication_rounded,
       title: 'Medication Details',
-      subtitle:
-          'Enter the basic information about your medicine',
+      subtitle: 'Enter the basic information about your medicine',
       child: Column(
         children: [
           _buildInputField(
@@ -492,8 +425,7 @@ class _AddMedicationScreenState
             controller: _stockController,
             hint: 'e.g., 30',
             icon: Icons.inventory_2_outlined,
-            keyboardType:
-                TextInputType.number,
+            keyboardType: TextInputType.number,
           ),
         ],
       ),
@@ -508,11 +440,9 @@ class _AddMedicationScreenState
     return _buildSectionCard(
       icon: Icons.schedule_rounded,
       title: 'Schedule',
-      subtitle:
-          'Choose when you need to take this medicine',
+      subtitle: 'Choose when you need to take this medicine',
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Frequency',
@@ -527,22 +457,14 @@ class _AddMedicationScreenState
 
           Container(
             height: 43,
-            padding:
-                const EdgeInsets.symmetric(
-              horizontal: 11,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 11),
             decoration: BoxDecoration(
               color: lavender,
-              borderRadius:
-                  BorderRadius.circular(11),
-              border: Border.all(
-                color: borderColor,
-              ),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(color: borderColor),
             ),
-            child:
-                DropdownButtonHideUnderline(
-              child:
-                  DropdownButton<String>(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
                 value: _selectedFrequency,
                 isExpanded: true,
                 icon: const Icon(
@@ -553,19 +475,17 @@ class _AddMedicationScreenState
                 style: const TextStyle(
                   color: textDark,
                   fontSize: 10,
-                  fontWeight:
-                      FontWeight.w600,
+                  fontWeight: FontWeight.w600,
                 ),
-                items: _frequencies
-                    .map(
-                      (item) =>
-                          DropdownMenuItem<
-                              String>(
-                        value: item,
-                        child: Text(item),
-                      ),
-                    )
-                    .toList(),
+                items:
+                    _frequencies
+                        .map(
+                          (item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          ),
+                        )
+                        .toList(),
                 onChanged: (value) {
                   if (value != null) {
                     _changeFrequency(value);
@@ -586,8 +506,7 @@ class _AddMedicationScreenState
                     style: TextStyle(
                       color: textDark,
                       fontSize: 9,
-                      fontWeight:
-                          FontWeight.w700,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
@@ -599,8 +518,7 @@ class _AddMedicationScreenState
                       style: TextStyle(
                         color: purple,
                         fontSize: 8,
-                        fontWeight:
-                            FontWeight.w800,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
@@ -609,10 +527,7 @@ class _AddMedicationScreenState
 
             const SizedBox(height: 6),
 
-            for (int i = 0;
-                i < _selectedTimes.length;
-                i++)
-              _buildTimeTile(i),
+            for (int i = 0; i < _selectedTimes.length; i++) _buildTimeTile(i),
           ],
         ],
       ),
@@ -621,20 +536,13 @@ class _AddMedicationScreenState
 
   Widget _buildTimeTile(int index) {
     return Container(
-      margin:
-          const EdgeInsets.only(bottom: 6),
+      margin: const EdgeInsets.only(bottom: 6),
       height: 43,
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(10),
-        border: Border.all(
-          color: borderColor,
-        ),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         children: [
@@ -643,8 +551,7 @@ class _AddMedicationScreenState
             height: 27,
             decoration: BoxDecoration(
               color: lavender,
-              borderRadius:
-                  BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.access_time_rounded,
@@ -661,8 +568,7 @@ class _AddMedicationScreenState
               style: const TextStyle(
                 color: textDark,
                 fontSize: 10,
-                fontWeight:
-                    FontWeight.w700,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),
@@ -674,30 +580,22 @@ class _AddMedicationScreenState
               height: 27,
               decoration: BoxDecoration(
                 color: lavender,
-                borderRadius:
-                    BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
-                Icons.edit_rounded,
-                color: purple,
-                size: 13,
-              ),
+              child: const Icon(Icons.edit_rounded, color: purple, size: 13),
             ),
           ),
 
           if (_selectedTimes.length > 1) ...[
             const SizedBox(width: 5),
             GestureDetector(
-              onTap: () =>
-                  _removeTime(index),
+              onTap: () => _removeTime(index),
               child: Container(
                 width: 27,
                 height: 27,
                 decoration: BoxDecoration(
-                  color:
-                      const Color(0xFFFFF0F1),
-                  borderRadius:
-                      BorderRadius.circular(8),
+                  color: const Color(0xFFFFF0F1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Icons.close_rounded,
@@ -717,17 +615,14 @@ class _AddMedicationScreenState
   // ============================================================
 
   Widget _buildBarcodeCard() {
-    final hasBarcode =
-        _barcodeController.text.trim().isNotEmpty;
+    final hasBarcode = _barcodeController.text.trim().isNotEmpty;
 
     return _buildSectionCard(
       icon: Icons.qr_code_rounded,
       title: 'Medicine Barcode',
-      subtitle:
-          'Use this barcode to quickly identify the medicine',
+      subtitle: 'Use this barcode to quickly identify the medicine',
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Barcode ID (Optional)',
@@ -742,50 +637,31 @@ class _AddMedicationScreenState
 
           Container(
             height: 43,
-            padding:
-                const EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: lavender,
-              borderRadius:
-                  BorderRadius.circular(11),
-              border: Border.all(
-                color: borderColor,
-              ),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(color: borderColor),
             ),
             child: Row(
               children: [
-                const Icon(
-                  Icons.qr_code_rounded,
-                  color: purple,
-                  size: 17,
-                ),
+                const Icon(Icons.qr_code_rounded, color: purple, size: 17),
 
                 const SizedBox(width: 8),
 
                 Expanded(
                   child: TextField(
-                    controller:
-                        _barcodeController,
+                    controller: _barcodeController,
                     readOnly: true,
-                    style:
-                        const TextStyle(
+                    style: const TextStyle(
                       color: textDark,
                       fontSize: 9,
-                      fontWeight:
-                          FontWeight.w600,
+                      fontWeight: FontWeight.w600,
                     ),
-                    decoration:
-                        const InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
-                      hintText:
-                          'Auto-generated after saving',
-                      hintStyle:
-                          TextStyle(
-                        color: textMuted,
-                        fontSize: 8,
-                      ),
+                      hintText: 'Auto-generated after saving',
+                      hintStyle: TextStyle(color: textMuted, fontSize: 8),
                       isDense: true,
                     ),
                   ),
@@ -800,10 +676,7 @@ class _AddMedicationScreenState
             hasBarcode
                 ? 'Medicine ID: ${_barcodeController.text}'
                 : 'Code will be generated after saving',
-            style: const TextStyle(
-              color: textMuted,
-              fontSize: 7.5,
-            ),
+            style: const TextStyle(color: textMuted, fontSize: 7.5),
           ),
 
           if (hasBarcode) ...[
@@ -818,15 +691,11 @@ class _AddMedicationScreenState
   Widget _buildBarcodePreview() {
     return Container(
       width: double.infinity,
-      padding:
-          const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(11),
-        border: Border.all(
-          color: borderColor,
-        ),
+        borderRadius: BorderRadius.circular(11),
+        border: Border.all(color: borderColor),
       ),
       child: Column(
         children: [
@@ -835,8 +704,7 @@ class _AddMedicationScreenState
             style: TextStyle(
               color: textDark,
               fontSize: 9,
-              fontWeight:
-                  FontWeight.w800,
+              fontWeight: FontWeight.w800,
             ),
           ),
 
@@ -845,11 +713,7 @@ class _AddMedicationScreenState
           Container(
             width: double.infinity,
             height: 82,
-            padding:
-                const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 5,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             color: Colors.white,
             child: BarcodeWidget(
               barcode: Barcode.code128(
@@ -857,25 +721,19 @@ class _AddMedicationScreenState
                 useCode128B: true,
                 useCode128C: false,
               ),
-              data:
-                  _barcodeController.text.trim(),
+              data: _barcodeController.text.trim(),
               width: 280,
               height: 72,
               color: Colors.black,
               backgroundColor: Colors.white,
               drawText: true,
               textPadding: 5,
-              errorBuilder:
-                  (context, error) {
+              errorBuilder: (context, error) {
                 return const Center(
                   child: Text(
                     'Unable to generate barcode',
-                    textAlign:
-                        TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 8,
-                    ),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.red, fontSize: 8),
                   ),
                 );
               },
@@ -889,8 +747,7 @@ class _AddMedicationScreenState
             style: const TextStyle(
               color: textDark,
               fontSize: 8,
-              fontWeight:
-                  FontWeight.w700,
+              fontWeight: FontWeight.w700,
               letterSpacing: 1,
             ),
           ),
@@ -900,10 +757,7 @@ class _AddMedicationScreenState
           const Text(
             'Scan this Code 128 barcode with the MediMate scanner.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: textMuted,
-              fontSize: 7,
-            ),
+            style: TextStyle(color: textMuted, fontSize: 7),
           ),
         ],
       ),
@@ -920,35 +774,22 @@ class _AddMedicationScreenState
       height: 50,
       child: ElevatedButton(
         onPressed: _saveMedication,
-        style:
-            ElevatedButton.styleFrom(
+        style: ElevatedButton.styleFrom(
           backgroundColor: purple,
           foregroundColor: Colors.white,
           elevation: 0,
-          shape:
-              RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
           ),
         ),
         child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.add_rounded,
-              size: 20,
-            ),
+            const Icon(Icons.add_rounded, size: 20),
             const SizedBox(width: 5),
             Text(
-              isEditing
-                  ? 'Update Medication'
-                  : 'Save Medication',
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight:
-                    FontWeight.w800,
-              ),
+              isEditing ? 'Update Medication' : 'Save Medication',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
             ),
           ],
         ),
@@ -968,67 +809,47 @@ class _AddMedicationScreenState
   }) {
     return Container(
       width: double.infinity,
-      padding:
-          const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(16),
-        border: Border.all(
-          color: borderColor,
-        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color:
-                purple.withOpacity(0.035),
+            color: purple.withValues(alpha: 0.035),
             blurRadius: 8,
-            offset:
-                const Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: 30,
                 height: 30,
-                decoration:
-                    BoxDecoration(
+                decoration: BoxDecoration(
                   color: lavender,
-                  borderRadius:
-                      BorderRadius.circular(
-                    9,
-                  ),
+                  borderRadius: BorderRadius.circular(9),
                 ),
-                child: Icon(
-                  icon,
-                  color: purple,
-                  size: 16,
-                ),
+                child: Icon(icon, color: purple, size: 16),
               ),
 
               const SizedBox(width: 8),
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style:
-                          const TextStyle(
+                      style: const TextStyle(
                         color: textDark,
                         fontSize: 11,
-                        fontWeight:
-                            FontWeight.w900,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
 
@@ -1036,11 +857,7 @@ class _AddMedicationScreenState
 
                     Text(
                       subtitle,
-                      style:
-                          const TextStyle(
-                        color: textMuted,
-                        fontSize: 7.5,
-                      ),
+                      style: const TextStyle(color: textMuted, fontSize: 7.5),
                     ),
                   ],
                 ),
@@ -1065,20 +882,17 @@ class _AddMedicationScreenState
     required TextEditingController controller,
     required String hint,
     required IconData icon,
-    TextInputType keyboardType =
-        TextInputType.text,
+    TextInputType keyboardType = TextInputType.text,
   }) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: const TextStyle(
             color: textDark,
             fontSize: 9,
-            fontWeight:
-                FontWeight.w700,
+            fontWeight: FontWeight.w700,
           ),
         ),
 
@@ -1088,45 +902,28 @@ class _AddMedicationScreenState
           height: 43,
           decoration: BoxDecoration(
             color: lavender,
-            borderRadius:
-                BorderRadius.circular(11),
-            border: Border.all(
-              color: borderColor,
-            ),
+            borderRadius: BorderRadius.circular(11),
+            border: Border.all(color: borderColor),
           ),
           child: TextField(
             controller: controller,
-            keyboardType:
-                keyboardType,
+            keyboardType: keyboardType,
             style: const TextStyle(
               color: textDark,
               fontSize: 9.5,
-              fontWeight:
-                  FontWeight.w600,
+              fontWeight: FontWeight.w600,
             ),
-            decoration:
-                InputDecoration(
+            decoration: InputDecoration(
               hintText: hint,
-              hintStyle:
-                  const TextStyle(
+              hintStyle: const TextStyle(
                 color: textMuted,
                 fontSize: 8.5,
-                fontWeight:
-                    FontWeight.w400,
+                fontWeight: FontWeight.w400,
               ),
-              prefixIcon: Icon(
-                icon,
-                color: purple,
-                size: 16,
-              ),
-              prefixIconConstraints:
-                  const BoxConstraints(
-                minWidth: 36,
-              ),
+              prefixIcon: Icon(icon, color: purple, size: 16),
+              prefixIconConstraints: const BoxConstraints(minWidth: 36),
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets
-                      .symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                 vertical: 12,
                 horizontal: 8,
               ),
@@ -1142,104 +939,67 @@ class _AddMedicationScreenState
   // ============================================================
 
   void _saveMedication() {
-    if (_nameController.text
-            .trim()
-            .isEmpty ||
-        _dosageController.text
-            .trim()
-            .isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Please fill all required fields',
-          ),
-        ),
+    if (_nameController.text.trim().isEmpty ||
+        _dosageController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all required fields')),
       );
 
       return;
     }
 
-    final int stockQuantity =
-        int.tryParse(
-              _stockController.text.trim(),
-            ) ??
-            30;
+    final int stockQuantity = int.tryParse(_stockController.text.trim()) ?? 30;
 
-    debugPrint(
-      '📦 Stock quantity: $stockQuantity',
-    );
+    debugPrint('📦 Stock quantity: $stockQuantity');
 
     final Map<String, dynamic> med = {
-      if (_medicationId != null)
-        'id': _medicationId,
+      if (_medicationId != null) 'id': _medicationId,
 
-      'name':
-          _nameController.text.trim(),
+      'name': _nameController.text.trim(),
 
-      'dosage':
-          _dosageController.text.trim(),
+      'dosage': _dosageController.text.trim(),
 
-      'frequency':
-          _selectedFrequency,
+      'frequency': _selectedFrequency,
 
-      'stock_quantity':
-          stockQuantity,
+      'stock_quantity': stockQuantity,
 
-      if (_barcodeController.text
-          .trim()
-          .isNotEmpty)
-        'barcode':
-            _barcodeController.text.trim(),
+      if (_barcodeController.text.trim().isNotEmpty)
+        'barcode': _barcodeController.text.trim(),
     };
 
-    if (_selectedFrequency != 'As needed' &&
-        _selectedTimes.isNotEmpty) {
-      med['reminder_times'] =
-          List<String>.from(
-        _selectedTimes,
-      );
+    if (_selectedFrequency != 'As needed' && _selectedTimes.isNotEmpty) {
+      med['reminder_times'] = List<String>.from(_selectedTimes);
 
       debugPrint(
         '⏰ Saving reminder times: '
         '$_selectedTimes',
       );
 
-      final String timeStr =
-          _selectedTimes.first;
+      final String timeStr = _selectedTimes.first;
 
       try {
-        final List<String> parts =
-            timeStr.split(' ');
+        final List<String> parts = timeStr.split(' ');
 
         if (parts.length == 2) {
-          final List<String> hm =
-              parts[0].split(':');
+          final List<String> hm = parts[0].split(':');
 
-          int hour =
-              int.parse(hm[0]);
+          int hour = int.parse(hm[0]);
 
-          final int minute =
-              int.parse(hm[1]);
+          final int minute = int.parse(hm[1]);
 
-          final String ampm =
-              parts[1].toUpperCase();
+          final String ampm = parts[1].toUpperCase();
 
-          if (ampm == 'PM' &&
-              hour != 12) {
+          if (ampm == 'PM' && hour != 12) {
             hour += 12;
           }
 
-          if (ampm == 'AM' &&
-              hour == 12) {
+          if (ampm == 'AM' && hour == 12) {
             hour = 0;
           }
 
-          final DateTime now =
-              DateTime.now();
+          final DateTime now = DateTime.now();
 
-          DateTime nextDose =
-              DateTime(
+          DateTime nextDose = DateTime(
             now.year,
             now.month,
             now.day,
@@ -1248,20 +1008,12 @@ class _AddMedicationScreenState
           );
 
           if (nextDose.isBefore(now)) {
-            nextDose =
-                nextDose.add(
-              const Duration(
-                days: 1,
-              ),
-            );
+            nextDose = nextDose.add(const Duration(days: 1));
           }
 
-          med['next_dose'] =
-              nextDose.toIso8601String();
+          med['next_dose'] = nextDose.toIso8601String();
 
-          debugPrint(
-            '✅ Selected time: $timeStr',
-          );
+          debugPrint('✅ Selected time: $timeStr');
 
           debugPrint(
             '✅ Parsed as: '
@@ -1280,24 +1032,16 @@ class _AddMedicationScreenState
           );
         }
       } catch (e) {
-        debugPrint(
-          '❌ Error parsing time: $e',
-        );
+        debugPrint('❌ Error parsing time: $e');
       }
     } else {
-      med['reminder_times'] =
-          <String>[];
+      med['reminder_times'] = <String>[];
 
       med['next_dose'] = null;
     }
 
-    debugPrint(
-      '💾 Saving medication data: $med',
-    );
+    debugPrint('💾 Saving medication data: $med');
 
-    Navigator.pop(
-      context,
-      med,
-    );
+    Navigator.pop(context, med);
   }
 }
