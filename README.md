@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/readme/hero.svg" alt="MediMate - your all-in-one medication companion" width="100%"/>
+<img src="assets/images/hero.svg" alt="MediMate - your all-in-one medication companion" width="100%"/>
 
 *Manage medicines • Get reminders • Stay hydrated • Track stock • Scan barcodes • Speak your reminders*
 
@@ -45,7 +45,7 @@ To provide a simple digital solution for managing medication-related activities 
 
 ---
 
-<div align="center"><img src="assets/readme/section-features.svg" alt="Take. Track. Repeat." width="100%"/></div>
+<div align="center"><img src="assets/images/section-features.svg" alt="Take. Track. Repeat." width="100%"/></div>
 
 ## ✨ Features
 
@@ -105,9 +105,9 @@ To provide a simple digital solution for managing medication-related activities 
 
 ### 🔐 User Authentication
 - 📝 Registration
-- 🔑 Login
-- ❓ Forgot password
-- 🔄 Reset password
+- 🔑 Login (Supabase Auth)
+- ❓ Forgot password: a recovery code is emailed to you
+- 🔄 Reset password by entering the code in the app
 
 </td>
 </tr>
@@ -135,7 +135,7 @@ To provide a simple digital solution for managing medication-related activities 
 
 ---
 
-<div align="center"><img src="assets/readme/section-voice.svg" alt="Just say it" width="100%"/></div>
+<div align="center"><img src="assets/images/section-voice.svg" alt="Just say it" width="100%"/></div>
 
 ## 🎤 Voice Reminder
 
@@ -190,13 +190,17 @@ flowchart TD
 | 🎙️ **Speech-to-Text** | Voice recognition |
 | 🔊 **Flutter TTS** | Text-to-speech |
 | 🔔 **Local Notifications** | Medication reminders |
-| 📷 **Barcode Scanner** | Medicine barcode scanning |
+| 📷 **mobile_scanner** + ZXing (web) | Medicine barcode scanning on mobile and web |
+| ☁️ **Supabase** (`supabase_flutter`) | Authentication and cloud database (medicines, profile, hydration, voice reminders, scheduled notifications) |
+| 📲 **Firebase Cloud Messaging** | Push notifications |
+| 🎞️ **Lottie** | Login and sign-up animations |
+| 🔐 **permission_handler** | Camera, microphone and notification permissions |
 | ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white) | Version control |
 | ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white) | Source code management |
 
 ---
 
-<div align="center"><img src="assets/readme/section-modules.svg" alt="Nine modules, one app" width="100%"/></div>
+<div align="center"><img src="assets/images/section-modules.svg" alt="Nine modules, one app" width="100%"/></div>
 
 ## 🏗️ Application Modules
 
@@ -269,13 +273,15 @@ mindmap
 medication/
 │
 ├── assets/
-│   ├── readme/
-│   │   ├── hero.svg
-│   │   ├── section-features.svg
-│   │   ├── section-voice.svg
-│   │   ├── section-modules.svg
-│   │   └── footer.svg
+│   ├── animations/
+│   │   ├── login.json
+│   │   └── signup.json
 │   └── images/
+│       ├── hero.svg
+│       ├── section-features.svg
+│       ├── section-voice.svg
+│       ├── section-modules.svg
+│       ├── footer.svg
 │       ├── home_doctor.png
 │       ├── hydration_bottle.png
 │       ├── notification_bell.png
@@ -367,16 +373,20 @@ flutter pub get
 
 **4️⃣ Run the application**
 
+MediMate uses **Supabase** for sign-in and cloud data, so the app needs its publishable key at run time:
+
 ```bash
-flutter run
+flutter run --dart-define=SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 ```
+
+> Without the key, sign-in and cloud features will not work. Use your own Supabase project's **publishable (anon) key**, and update the project URL in `lib/main.dart` if you use a different project.
 
 ### 📱 Running on Android
 
 Connect an Android device or start an emulator, then run:
 
 ```bash
-flutter run
+flutter run --dart-define=SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 ```
 
 ### 🌐 Running on Web
@@ -384,8 +394,26 @@ flutter run
 To run the app in Google Chrome:
 
 ```bash
-flutter run -d chrome
+flutter run -d chrome --dart-define=SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 ```
+
+---
+
+## ☁️ Backend & Data
+
+MediMate keeps user data in **Supabase** and uses **Firebase Cloud Messaging** for push notifications. The app reads and writes these Supabase tables:
+
+| Table | Used for |
+|:---|:---|
+| `profiles` | User profile information |
+| `medications` | Medicines, dosage, schedule and stock |
+| `hydration_log` | Daily water intake |
+| `voice_reminders` | Reminders created by voice |
+| `scheduled_notifications` | Scheduled reminder notifications |
+| `user_tokens` | Device tokens for push notifications |
+| `barcode_lookups` | Barcodes already matched to a medicine name |
+
+Because the data lives in the cloud, you sign in with the same account to see your information.
 
 ---
 
@@ -422,7 +450,6 @@ Some features need device permissions to work properly.
 ## 🔮 Future Enhancements
 
 - [ ] 🔎 Medicine information lookup
-- [ ] ☁️ Cloud-based data synchronization
 - [ ] 🕓 Medication history
 - [ ] 📄 Prescription management
 - [ ] 🩺 Doctor information management
@@ -461,7 +488,7 @@ This project was developed for **academic purposes** as part of an MCA Mini Proj
 
 <div align="center">
 
-<img src="assets/readme/footer.svg" alt="Thank you for checking out MediMate" width="100%"/>
+<img src="assets/images/footer.svg" alt="Thank you for checking out MediMate" width="100%"/>
 
 *Made with Flutter & 💜*
 
