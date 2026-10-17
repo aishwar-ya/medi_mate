@@ -1,10 +1,6 @@
 <div align="center">
 
-<img src="assets/images/home_doctor.png" alt="MediMate Logo" width="140"/>
-
-# 💊 MediMate
-
-### Your all-in-one medication companion
+<img src="assets/readme/hero.svg" alt="MediMate - your all-in-one medication companion" width="100%"/>
 
 *Manage medicines • Get reminders • Stay hydrated • Track stock • Scan barcodes • Speak your reminders*
 
@@ -48,6 +44,8 @@ Add medicines, set reminders, track your water intake, monitor medicine stock, s
 To provide a simple digital solution for managing medication-related activities by combining **medication management, reminders, hydration tracking, stock monitoring, barcode scanning, and voice-based reminders** in a single application.
 
 ---
+
+<div align="center"><img src="assets/readme/section-features.svg" alt="Take. Track. Repeat." width="100%"/></div>
 
 ## ✨ Features
 
@@ -137,6 +135,8 @@ To provide a simple digital solution for managing medication-related activities 
 
 ---
 
+<div align="center"><img src="assets/readme/section-voice.svg" alt="Just say it" width="100%"/></div>
+
 ## 🎤 Voice Reminder
 
 MediMate lets you create medication reminders **using your voice**. Just say a command like:
@@ -195,6 +195,8 @@ flowchart TD
 | ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white) | Source code management |
 
 ---
+
+<div align="center"><img src="assets/readme/section-modules.svg" alt="Nine modules, one app" width="100%"/></div>
 
 ## 🏗️ Application Modules
 
@@ -267,6 +269,12 @@ mindmap
 medication/
 │
 ├── assets/
+│   ├── readme/
+│   │   ├── hero.svg
+│   │   ├── section-features.svg
+│   │   ├── section-voice.svg
+│   │   ├── section-modules.svg
+│   │   └── footer.svg
 │   └── images/
 │       ├── home_doctor.png
 │       ├── hydration_bottle.png
@@ -348,7 +356,7 @@ git clone https://github.com/aishwar-ya/medi_mate.git
 **2️⃣ Open the project**
 
 ```bash
-cd medication
+cd medi_mate
 ```
 
 **3️⃣ Install dependencies**
@@ -453,9 +461,7 @@ This project was developed for **academic purposes** as part of an MCA Mini Proj
 
 <div align="center">
 
-### 💜 Thank you for checking out MediMate!
-
-If you like this project, please consider giving it a ⭐ on GitHub.
+<img src="assets/readme/footer.svg" alt="Thank you for checking out MediMate" width="100%"/>
 
 *Made with Flutter & 💜*
 
